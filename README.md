@@ -1,4 +1,5 @@
 # firstrespondersites
 # Team Members:
-Jude Yakamavage
-Dalton Schling
+* Jude Yakamavage
+* Dalton Schling
+* Mike McPhee Anderson (manderson334)

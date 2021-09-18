@@ -55,10 +55,10 @@ def compute_nearest_distance(fac_df, inc_coords_df):
         row_dist = np.min(np.sqrt(np.sum(np.power((fac_dist - df_row), 2), axis=1)))
         return row_dist
 
-    incident_dist = inc_coords_df[['lat', 'lon']].apply(compute_row_dist, axis=1, raw=True, result_type="reduce")  
-    incident_dist = pd.DataFrame(incident_dist, index=['nearest_station'])  
+    incident_dist = inc_coords_df[['lat', 'lon']].apply(compute_row_dist, axis=1, raw=True, result_type="reduce")
+    incident_dist.name = "nearest_station"    
     
-    return pd.concat([inc_coords_df, incident_dist], axis=1)
+    return pd.concat([inc_coords_df, incident_dist.to_frame()], axis=1)
 
 
 if __name__ == "__main__":
@@ -66,10 +66,10 @@ if __name__ == "__main__":
     fac_df = read_facilities()
     print("reading incidents")
     inc_coords_df = read_incidents()
-    print("computing incident distances")
-    dist_df = compute_incident_distances(fac_df, inc_coords_df)
-    print("writing csv...")
-    dist_df.to_csv("/data/incident_distances.csv")
+    #print("computing incident distances")
+    #dist_df = compute_incident_distances(fac_df, inc_coords_df)
+    #print("writing csv...")
+    #dist_df.to_csv("/data/incident_distances.csv")
     print("computing nearest distances")
     dist_df = compute_nearest_distance(fac_df, inc_coords_df)
     print("writing csv...")

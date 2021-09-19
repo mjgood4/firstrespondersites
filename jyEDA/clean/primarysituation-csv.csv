@@ -1,0 +1,189 @@
+Name,Code
+1 -,1
+10 -,10
+"100 Fire, other",100
+11 -,11
+111 Building fire,111
+112 Fires in struct. other than in a bldg.,112
+"113 Cooking fire, confined to container",113
+"114 Chimney or flue fire, confined to chimney or flue",114
+"115 Incinerator overload/mal.,fire confined",115
+"116 Fuel burner/boiler mal., fire coinfined",116
+"117 Commercial Compactor fire, confined to rubbish",117
+"118 Trash or rubbish fire, contained",118
+"120 Fire in mobile prop. used as a fixed struc., other",120
+121 Fire in mob. home used as residence,121
+"122 Fire in motor home, camper, recreational vehicle",122
+1230 Fire in portable building (Port-A-Potty),1230
+"123 Fire in portable building, fixed location",123
+"130 Mobile property (vehicle) fire, other",130
+131 Passenger vehicle fire,131
+132 Road freight or transport vehicle fire,132
+133 Rail vehicle fire,133
+134 Water vehicle fire,134
+135 Aircraft fire,135
+136 Self-propelled motor home or recreational vehicle,136
+137 Camper or recreational vehicle (RV) fire,137
+138 Off-road vehicle or heavy equipment fire,138
+"140 Natural vegetation fire, other",140
+"141 Forest, woods or wildland fire",141
+142 Brush or brush-and-grass mixture fire,142
+143 Grass fire,143
+"150 Outside rubbish fire, other",150
+"151 Outside rubbish, trash or waste fire",151
+152 Garbage dump or sanitary landfill fire,152
+153 Construction or demolition landfill fire,153
+154 Dumpster/Outside trash receptacle fire,154
+155 Outside compactor/compacted trash fire,155
+1600 Tent/Encampment fire,1600
+"160 Special outside fire, other",160
+161 Outside storage fire,161
+162 Outside equipment fire,162
+163 Outside gas or vapor combustion explosion,163
+164 Outside mailbox fire,164
+"170 Cultivated vegetation, crop fire, other",170
+173 Cultivated trees or nursery stock fire,173
+"200 Overpressure rupture, explosion, overheat other",200
+"210 Overpressure rupture from steam, other",210
+211 Overpressure rupture of steam pipe or pipeline,211
+212 Overpressure rupture of steam boiler,212
+"213 Steam rupture, pressure/process vessel",213
+"220 Overpressure rupture from air or gas, other",220
+221 Overpressure rupture of air or gas pipe/pipeline,221
+222 Overpressure rupture of boiler from air or gas,222
+223 Air or gas rupture of pressure or process vessel,223
+231 Chem. reaction rupture of process vessel,231
+"240 Explosion (no fire), other",240
+241 Munitions or bomb explosion (no fire),241
+242 Blasting agent explosion (no fire),242
+243 Fireworks explosion (no fire),243
+244 Dust Explosion (no fire),244
+25* -,25*
+"251 Excess heat, scorth burns with no ign.",251
+"300 Rescue, EMS call, other",300
+"311 Medical assist, assist EMS crew",311
+"320 Emergency medical service incident, other",320
+"321 EMS call, excluding vehicle accident with injury",321
+322 Motor vehicle accident with injuries,322
+323 Auto/Ped. Accident (Veh.),323
+324 Motor vehicle accident with no injuries.,324
+"331 Lock-in (if lock out , use 511 )",331
+"340 Search, other",340
+341 Search for person on land,341
+342 Search for person in water,342
+343 Search for person underground,343
+"350 Extrication, rescue, other",350
+351 Extrication of victim(s) from building/structure,351
+352 Extrication of victim(s) from vehicle,352
+353 Removal of victim(s) from stalled elevator,353
+354 Trench/below grade rescue,354
+355 Confined space rescue,355
+356 High angle rescue,356
+357 Extrication of victim(s) from machinery,357
+"360 Water & ice related rescue, other",360
+361 Swimming/recreational water areas rescue,361
+362 Ice rescue,362
+363 Swift water rescue,363
+364 Surf rescue,364
+365 Watercraft rescue,365
+"370 Electrical rescue, other",370
+371 Electrocution or potential electrocution,371
+372 Trapped by power lines,372
+381 Rescue or EMS standby,381
+4000 Tent/Encampment hazardous condition,4000
+"400 Hazardous condition, other",400
+"410 Combustible/flammable gas/liquid condition, other",410
+411 Gasoline or other flammable liquid spill,411
+412 Gas leak (natural gas or LPG),412
+413 Oil or other combustible liquid spill,413
+"420 Toxic condition, other (haz.)",420
+421 Chemical hazard (no spill or leak),421
+422 Chemical spill or leak(haz.),422
+423 Refrigeration leak,423
+424 Carbon monoxide incident,424
+"430 Radioactive condition, other",430
+"431 Radiation leak, radioactive material",431
+"440 Elec. wiring/equip. problem, other",440
+"441 Heat from short circuit (wiring), defective/worn",441
+442 Overheated motor,442
+443 Breakdown of light ballast,443
+444 Power line down,444
+"445 Arcing, shorted electrical equipment",445
+"451 Biological hazard, confirmed or suspected",451
+"460 Accident, potential accident, other",460
+461 Bldg/structure weakened or collapsed,461
+462 Aircraft standby,462
+"463 Vehicle accident, general cleanup",463
+"471 Explosive, bomb removal (for bomb scare, use 721)",471
+"480 Attempted burning, illegal action, other",480
+481 Attempt to burn,481
+482 Threat to burn,482
+"500 Service Call, other",500
+"510 Person in distress, other",510
+511 Lock-out,511
+512 Ring or jewelry removal,512
+"520 Water problem, other",520
+521 Water evacuation,521
+522 Water or steam leak,522
+531 Smoke or odor removal,531
+"540 Animal problem, other",540
+541 Animal problem,541
+542 Animal rescue,542
+"550 Public service assistance, other",550
+551 Assist PD or other Govern. Agency,551
+552 Police matter,552
+553 Public service,553
+554 Assist invalid,554
+"555 Defective elevator, no occupants",555
+561 Unauthorized burning,561
+"571 Cover assignment, standby, moveup",571
+"600 Good intent call, other",600
+611 Dispatched & canceled en route,611
+621 Wrong location,621
+622 No incident found on arrival/disp. addr.,622
+631 Authorized controlled burning,631
+632 Prescribed fire,632
+641 Vicinity alarm (incident in other location),641
+"650 Steam, other gas mistaken for smoke, other",650
+"651 Smoke scare, odor of smoke",651
+"652 Steam, vapor, fog or dust thought to be smoke",652
+"653 Barbecue, tar kettle",653
+"661 EMS call, party transported by non-fire agency",661
+671 HazMat release investigation w/no HazMat,671
+"672 Biological hazard investigation, none found",672
+"700 False alarm or false call, other",700
+71 -,71
+"710 Malicious, mischievous false call, other",710
+"711 Municipal alarm system, malicious false alarm",711
+"712 Direct tie to FD, malicious false alarm",712
+"713 Telephone, malicious false alarm",713
+"714 Central station, malicious false alarm",714
+"715 Local alarm sys., Malicious False alarm",715
+721 Bomb scare no bomb,721
+"730 System malfunction, other",730
+731 Sprinkler activation due to malfunction,731
+732 Exting. sys. activation/ malfunction,732
+733 Smoke detector activation due to malfunction,733
+734 Heat detector activation/malfunction,734
+735 Alarm system sounded due to malfunction,735
+736 CO detector activation/malfunction,736
+"740 Unintentional alarm, other",740
+"741 Sprinkler activation, no fire unintentional",741
+742 Extinguishing system activation,742
+"743 Smoke detector, no fire, accidental",743
+"744 Detector activation, no fire accident",744
+"745 Alarm system activation, no fire unintentional",745
+"746 Carbon monoxide detector activation, no CO",746
+75 -,75
+"751 Biological hazard, malicious false report",751
+"800 Severe weather/Nat. disaster, other",800
+811 Earthquake assessment,811
+812 Flood assessment,812
+"813 Wind storm, tornado/hurricane assessment",813
+814 Lightning strike (no fire),814
+815 Severe weather/Nat. Disaster standby,815
+"900 Special type of incident, other",900
+911 Citizen complaint,911
+CR -,CR
+N/A -,N/A
+Y -,Y

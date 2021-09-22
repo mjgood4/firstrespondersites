@@ -1,0 +1,81 @@
+facility_id,common_name,Fire Station,IsFireStation,address,city,zip_code,block_lot,owned_leased,dept_id_for_jurisdiction,jurisdiction,gross_sq_ft,longitude,latitude,supervisor_district,city_tenants,land_id
+697,Fire Station #15,15,1,1000 Ocean Ave,San Francisco,94112,3180001,Own,38,Fire Department,12138,-122.4529266,37.72348863,7,,588
+2,Hamilton Family Residence,,0,260 Golden Gate Ave,San Francisco,94102,345007,Own,45,Police Department,50000,-122.4149739,37.78201068,6,,332
+685,Fire Chief's Residence,,0,870 Bush St,San Francisco,94108,274010,Own,38,Fire Department,4500,-122.4115922,37.78999924,3,,333
+3269,Palo Alto/Marview Comm Facility,,0,Palo Alto Ave and Marview Way,San Francisco,94114,2719C023,Own,38,Fire Department,,-122.4497724,37.75666164,7,,52
+707,Fire Station #24,24,1,100 Hoffman Ave,San Francisco,94114,2801001,Own,38,Fire Department,7600,-122.441105,37.75312935,8,,340
+723,Fire Station #40,40,1,2155 18th Ave,San Francisco,94116,2199003,Own,38,Fire Department,7350,-122.4752694,37.74761094,7,,318
+692,Fire Station #10,10,1,655 Presidio Ave,San Francisco,94115,1032001,Own,38,Fire Department,14300,-122.4467233,37.78562526,2,,3
+728,Fire Station #48,48,1,800 Avenue I,San Francisco,94130,1939026,Own,38,Fire Department,18000,-122.369211,37.8266683,6,,1041
+701,Fire Station #19,19,1,390 Buckingham Way,San Francisco,94132,7296002,Own,38,Fire Department,11500,-122.4789029,37.72781162,7,,306
+1551,SFPD Pistol Range,,0,700 John Muir Dr,San Francisco,94132,7283004,Own,45,Police Department,10000,-122.4996778,37.72027733,7,,809
+1130,Mission Station,,0,630 Valencia St,San Francisco,94110,3577001,Own,45,Police Department,25000,-122.4219697,37.7626807,8,,556
+731,Fire Station #7 - Division 3 Headquarters,7,1,2300 Folsom St,San Francisco,94110,3594059,Own,38,Fire Department,16488,-122.4150418,37.7602554,9,,314
+717,Fire Station #36,36,1,109 Oak St,San Francisco,94102,837025,Own,38,Fire Department,16100,-122.4212113,37.77493241,5,,327
+446,Central Communications Center (Fire),,0,1003 Turk St,San Francisco,94110,759001,Own,38,Fire Department,,-122.4257413,37.78105362,5,,174
+1624,Southern District Station,,0,1251 03rd St,San Francisco,94158,8719007,Own,38,Fire Department,,-122.3890517,37.77245003,6,,755
+1640,"Fire Station #49, Arson Task Force, BOE",49,1,1415 Evans Ave,San Francisco,94124,5236017,Own,38,Fire Department,,-122.3855761,37.74087817,10,,494
+714,Fire Station #32,32,1,194 Park St,San Francisco,94110,5720059,Own,38,Fire Department,10900,-122.4211661,37.73632275,9,,346
+696,Fire Station #14,14,1,551 26th Ave,San Francisco,94121,1518009,Own,38,Fire Department,15900,-122.4860616,37.77899265,1,,323
+1231,Park Station,,0,1899 Waller St,San Francisco,94117,1700001,Own,45,Police Department,13700,-122.455226,37.76782399,5,,803
+712,Fire Station #3,3,1,1067 Post St,San Francisco,94109,693018,Own,38,Fire Department,8000,-122.419321,37.7866412,6,,328
+1190,Northern Station,,0,1125 Fillmore St,San Francisco,94115,755013,Own,45,Police Department,18000,-122.4323904,37.78016114,5,,193
+702,Fire Station #2,2,1,1340 Powell St,San Francisco,94133,160015,Own,38,Fire Department,16920,-122.4098792,37.79703411,3,,337
+691,Fire Station #1,1,1,935 Folsom St,San Francisco,94105,3753313,Own,38,Fire Department,,-122.4041202,37.77945653,6,,951
+3069,McLaren Park Police Stables,,0,100 John F Shelley Dr,San Francisco,94134,6190066,Own,45,Police Department,,-122.4163893,37.72057656,9,,779
+706,Fire Station #23,23,1,1348 45th Ave,San Francisco,94122,1799029,Own,38,Fire Department,12000,-122.50471,37.76140573,4,,319
+1309,Public Safety Building,,0,1245 03rd St,San Francisco,94158,8719007,Own,45,Police Department,185855,-122.3891831,37.77255391,6,,755
+150,AWSS Pipeyard (behind 2245 Jerrold),,0,2245 JERROLD AVE,San Francisco,94124,5286A021,Own,38,Fire Department,6400,-122.4016405,37.74463341,10,,1236
+3161,Old Potrero Police Station,,0,2300 03rd St,San Francisco,94110,4108037,Own,45,Police Department,,-122.3887934,37.76016382,10,,799
+1208,Fire Station #4,4,1,449 Mission Rock St,San Francisco,94158,8719007,Own,38,Fire Department,,-122.3891388,37.77272155,6,,755
+1750,Tenderloin Station,,0,301 Eddy St,San Francisco,94102,338023,Own,45,Police Department,27500,-122.4129067,37.78364565,6,,548
+727,Fire Station #44,44,1,1298 Girard St,San Francisco,94134,6194010,Own,38,Fire Department,8450,-122.4004336,37.71662054,10,,348
+705,Fire Station #22,22,1,1290 16th Ave,San Francisco,94122,1735064,Own,38,Fire Department,5900,-122.4736871,37.76393037,5,,322
+1310,Police Koban,,0,Powell St & Market St,San Francisco,94103,341014,Own,45,Police Department,,-122.4084772,37.78399556,6,,159
+1826,Vista Francisco Pump,,0,39 Crestline Dr,San Francisco,94112,2844008,Own,45,Police Department,,-122.4467547,37.75032177,8,,668
+3291,Fifth St Homeless Center,,0,695 Bryant St,San Francisco,94107,3777047,Own,45,Police Department,,-122.3998038,37.77772102,6,,373
+1308,Police Academy,,0,350 Amber Dr,San Francisco,94124,7521005,Own,45,Police Department,19332,-122.4414828,37.74419599,8,,175
+710,Fire Station #28,28,1,1814 Stockton St,San Francisco,94133,77024,Own,38,Fire Department,9350,-122.4093515,37.80254788,3,,338
+715,Fire Station #33,33,1,8 Capitol Ave,San Francisco,94112,7147046,Own,38,Fire Department,5900,-122.4585807,37.71085948,11,,349
+275,Bureau of Equipment Headquarters,,0,2501 25th St,San Francisco,94110,4279001,Own,38,Fire Department,7000,-122.40358,37.75174903,10,,345
+732,Fire Station #7/DOT-2 Bngl/Class/Office,7,0,2300 Folsom St,San Francisco,94110,3594059,Own,38,Fire Department,8712,-122.4153485,37.75983207,9,,314
+814,Golden Gate Stables,,0,950 36th Ave,San Francisco,94121,1263011,Own,45,Police Department,11800,-122.4944141,37.76923998,1,,56
+190,Hunters Point Shipyard Building 606,,0,606 Manseau St,San Francisco,94124,,Own,45,Police Department,90000,-122.3674364,37.72050242,10,,
+695,Fire Station #13,13,1,530 Sansome St,San Francisco,94111,206017,Own,38,Fire Department,18790,-122.4013502,37.79551871,3,,336
+698,Fire Station #16,16,1,2251 Greenwich St,San Francisco,94123,515031,Own,38,Fire Department,14000,-122.4367203,37.79858185,2,,331
+1229,Park Patrol Station,,0,811 Stanyan St,San Francisco,94117,1263011,Own,45,Police Department,,-122.4551899,37.76775135,5,,56
+729,Fire Station #5 - Division 2 Headquarters,5,1,1301 Turk St,San Francisco,94115,756001,Own,38,Fire Department,12600,-122.4307347,37.78051537,5,,641
+718,Fire Station #37,37,1,798 Wisconsin St,San Francisco,94107,4097024,Own,38,Fire Department,6950,-122.3992439,37.75741778,10,,344
+711,Fire Station #29,29,1,299 Vermont St,San Francisco,94103,3935002,Own,38,Fire Department,8300,-122.4042958,37.76615647,10,,343
+726,Fire Station #43,43,1,720 Moscow St,San Francisco,94112,6338024,Own,38,Fire Department,10800,-122.4316787,37.71634867,11,,308
+720,Fire Station #39,39,1,1091 Portola Dr,San Francisco,94127,2982029,Own,38,Fire Department,8450,-122.458635,37.74003984,7,,342
+690,Fire Headquarters,,0,698 02nd St,San Francisco,94107,3788006,Own,38,Fire Department,,-122.3910479,37.78054991,6,,311
+703,Fire Station #20,20,1,285 Olympia Way,San Francisco,94131,2842009,Own,38,Fire Department,10300,-122.4560767,37.75117125,7,,582
+1207,Old Fire Station 21,21,0,1152 Oak St,San Francisco,94117,1215010,Own,38,Fire Department,5600,-122.4383662,37.77330114,5,,325
+716,Fire Station #34,34,1,499 41st Ave,San Francisco,94121,1494001,Own,38,Fire Department,4400,-122.5026191,37.77943863,1,,324
+688,Fire Division of Training  - Treasure Island,,0,600 Avenue M,San Francisco,94130,1939030,Own,38,Fire Department,5040,-122.3670518,37.82705933,6,,1106
+694,Fire Station #12,12,1,1145 Stanyan St,San Francisco,94117,2630047,Own,38,Fire Department,11300,-122.4525864,37.76344993,5,,316
+689,Fire Division of Training - Folsom St,,0,2310 Folsom St,San Francisco,94110,3594059,Own,38,Fire Department,,-122.4150109,37.76001239,9,,314
+1407,Richmond Station,,0,461 06th Ave,San Francisco,94118,1538007,Own,45,Police Department,13000,-122.4644607,37.78000129,1,,812
+1182,Next Door Shelter,,0,1001 Polk St,San Francisco,94109,694004,Own,45,Police Department,37125,-122.420049,37.78611645,6,,374
+699,Fire Station #17,17,1,1295 Shafter Ave,San Francisco,94124,4792018,Own,38,Fire Department,12100,-122.3850667,37.72752662,10,,310
+3168,Sunset Tank & Pump Station,,0,2275 44TH AVE,San Francisco,94116,2305014,Own,38,Fire Department,,-122.502974,37.74424389,4,,317
+719,Fire Station #38,38,1,2150 California St,San Francisco,94115,638016,Own,38,Fire Department,13400,-122.4298802,37.78971868,2,,329
+1740,Taraval Station,,0,2345 24th Ave,San Francisco,94116,2353002,Own,45,Police Department,18070,-122.4814608,37.74373379,4,,177
+709,Fire Station #26,26,1,80 Digby St,San Francisco,94131,7540013,Own,38,Fire Department,15000,-122.4333997,37.74028306,8,,305
+733,Fire Station #8,8,1,36 Bluxome St,San Francisco,94107,3786039,Own,38,Fire Department,8000,-122.3967101,37.77730564,6,,312
+724,Fire Station #41,41,1,1325 Leavenworth St,San Francisco,94109,216003,Own,38,Fire Department,9600,-122.4164952,37.79337686,3,,334
+725,Fire Station #42,42,1,2430 San Bruno Ave,San Francisco,94134,5924004,Own,38,Fire Department,9300,-122.405425,37.73158521,9,,347
+897,Ingleside Police Station,,0,1 Sergeant John V Young St,San Francisco,94112,3179011,Own,45,Police Department,18500,-122.446251,37.72477013,11,,661
+3494,1828 Egbert Storage Facility,,0,1828 Egbert Ave,San Francisco,94124,5434B005,Own,45,Police Department,,-122.400424,37.72750693,10,,1289
+708,Fire Station #25,25,1,3305 3rd St,San Francisco,94124,4502A002,Own,38,Fire Department,11420,-122.3868525,37.7466393,10,,781
+139,Bureau of Fire Investigation,,0,1275 3rd St,San Francisco,94158,8719007,Own,38,Fire Department,60000,-122.3893756,37.7722714,6,,756
+453,Central Station,,0,766 Vallejo St,San Francisco,94133,130043,Own,45,Police Department,8000,-122.4098629,37.79864532,3,,163
+704,Fire Station #21,21,1,1443 Grove St,San Francisco,94117,1200016,Own,38,Fire Department,8000,-122.4402718,37.77540972,5,,326
+730,Fire Station #6,6,1,135 Sanchez St,San Francisco,94114,3542025,Own,38,Fire Department,13500,-122.4308742,37.76707871,8,,313
+173,Bayview Station,,0,201 Williams Ave,San Francisco,94124,5423A010,Own,45,Police Department,16000,-122.3980866,37.72964172,10,,567
+738,Fire Station #35 - Fireboat Headquarters,35,1,Pier 22 1/2,San Francisco,94105,9900022H,Own,38,Fire Department,2500,-122.3884401,37.79022103,6,,369
+693,Fire Station #11,11,1,3880 26th St,San Francisco,94131,6551043,Own,38,Fire Department,14000,-122.4264855,37.74878232,8,,307
+700,Fire Station #18,18,1,1935 32nd Ave,San Francisco,94116,2102006,Own,38,Fire Department,15900,-122.4905439,37.75098636,4,,321
+734,Fire Station #9,9,1,2245 Jerrold Ave,San Francisco,94124,5286A022,Own,38,Fire Department,15000,-122.4012356,37.74526234,10,,309
+713,Fire Station #31,31,1,441 12th Ave,San Francisco,94118,1532007,Own,38,Fire Department,8500,-122.4709114,37.77984011,1,,320

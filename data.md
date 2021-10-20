@@ -4,6 +4,7 @@
 
 ### [Fire Incidents](https://data.sfgov.org/Public-Safety/Fire-Incidents/wr8u-xric)
 
+* **Description**: One row per fire incident (call)
 * [Data Dictionary](https://data.sfgov.org/api/views/wr8u-xric/files/54c601a2-63f1-4b27-a79d-f484c620f061?download=true&filename=FIR-0001_DataDictionary_fire-incidents.xlsx)
 * Table Name: fire_incidents
 

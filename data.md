@@ -4,11 +4,12 @@ Tables from the sqlite **v1** file
 
 ## SQLite Schema
 
+The *incident_number* column is indexed one each table to (hopefully) facilitate fasters joins.  Generally, it appears that incident_number is the preferred join key for all the below tables.
+
 ### [Fire Incidents](https://data.sfgov.org/Public-Safety/Fire-Incidents/wr8u-xric)
 
 * **Description**: One row per fire incident (call)
 * [Data Dictionary](https://data.sfgov.org/api/views/wr8u-xric/files/54c601a2-63f1-4b27-a79d-f484c620f061?download=true&filename=FIR-0001_DataDictionary_fire-incidents.xlsx)
-* [Source] ()
 * Table Name: fire_incidents
 
 ```
@@ -79,7 +80,85 @@ CREATE TABLE IF NOT EXISTS "fire_incidents" (
   "neighborhood_district" TEXT,
   "point" TEXT
 );
-CREATE INDEX "ix_fire_incident_number_index"ON "fire_incidents" ("incident_number");
 ```
 
-### Fire Department Calls for Service
+### [Fire Department Calls for Service](https://data.sfgov.org/Public-Safety/Fire-Department-Calls-for-Service/nuek-vuh3)
+
+* **Description:** Unit-level response data for each incident
+* **Relationships:** Join to Fire Incidents by incident number (?? check this)
+* [Data Dictionary](https://data.sfgov.org/api/views/nuek-vuh3/files/ddb7f3a9-0160-4f07-bb1e-2af744909294?download=true&filename=FIR-0002_DataDictionary_fire-calls-for-service.xlsx)
+* Table Name: calls_for_service
+
+```
+CREATE TABLE IF NOT EXISTS "calls_for_service" (
+"index" INTEGER,
+  "call_number" INTEGER,
+  "unit_id" TEXT,
+  "incident_number" INTEGER,
+  "call_type" TEXT,
+  "call_date" TEXT,
+  "watch_date" TIMESTAMP,
+  "received_dttm" TIMESTAMP,
+  "entry_dttm" TIMESTAMP,
+  "dispatch_dttm" TIMESTAMP,
+  "response_dttm" TEXT,
+  "on_scene_dttm" TIMESTAMP,
+  "transport_dttm" TIMESTAMP,
+  "hospital_dttm" TIMESTAMP,
+  "call_final_disposition" TEXT,
+  "available_dttm" TIMESTAMP,
+  "address" TEXT,
+  "city" TEXT,
+  "zipcode_of_incident" TEXT,
+  "battalion" TEXT,
+  "station_area" TEXT,
+  "box" TEXT,
+  "original_priority" TEXT,
+  "priority" TEXT,
+  "final_priority" INTEGER,
+  "als_unit" INTEGER,
+  "call_type_group" TEXT,
+  "number_of_alarms" INTEGER,
+  "unit_type" TEXT,
+  "unit_sequence_in_call_dispatch" INTEGER,
+  "fire_prevention_district" TEXT,
+  "supervisor_district" TEXT,
+  "neighborhooods_-_analysis_boundaries" TEXT,
+  "rowid" TEXT,
+  "case_location" TEXT,
+  "analysis_neighborhoods" INTEGER
+);
+```
+
+### Primary Situation Mapping
+
+* **Description** maps the *primary_situation* column of the *fire_incidents* table to broader categories
+
+```
+CREATE TABLE IF NOT EXISTS "category_mappings" (
+  "index" INTEGER,
+  "primary_situation" TEXT,
+  "situation_category" TEXT
+);
+```
+
+### Incident Nearest Fire Station
+
+* **Description** provides distance (euclidean, L2) between incident and the nearest fire station
+
+```
+CREATE TABLE IF NOT EXISTS "nearest_distances" (
+  "index" INTEGER,
+  "unnamed:_0" INTEGER,
+  "incident_number" INTEGER,
+  "id" INTEGER,
+  "lon" REAL,
+  "lat" REAL,
+  "nearest_station" REAL
+);
+```
+
+
+
+
+

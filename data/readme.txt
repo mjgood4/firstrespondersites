@@ -1,1 +1,1 @@
-import_data.py create the sqlite database file
+import_data.py create the sqlite database file, using the contents of the raw folder (which is taken from the )

@@ -2,4 +2,6 @@ raw/
 *.db
 *.zip
 *.tmp
+.bingapikey
+distance_output/
 

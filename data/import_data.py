@@ -166,6 +166,14 @@ def import_nearest_distances(db_fh):
     
     print("\tdone creating nearest_distances")
 
+def import_fire_stations(db_fh):
+    print("\tImporting fire stations...")
+    cf = pd.read_csv("raw/city_facilities.csv")
+    cf = cf.loc[cf.common_name.str.lower().str.match("^fire station.*")]
+    cf.to_sql('fire_stations', conn, if_exists='replace')    
+
+    print("\tdone creating category_mappings")
+
 if __name__ == "__main__":    
     db_name = input("input database name for output:")
     print("Creating SQLite Database...")
@@ -174,3 +182,4 @@ if __name__ == "__main__":
     import_calls_for_service(conn)
     import_category_mapping(conn)
     import_nearest_distances(conn)
+    import_fire_stations(conn)

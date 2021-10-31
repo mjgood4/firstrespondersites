@@ -174,12 +174,37 @@ def import_fire_stations(db_fh):
 
     print("\tdone creating category_mappings")
 
+def import_zone_definitions(db_fh):
+    print("\t Importing zone defintiions")
+    cf = pd.read_csv("raw/zone_grid.csv")
+    cf = cf.loc[:,['zone_idx', 'zone', 'centroid']]
+    cf.to_sql('zone_definitions', conn, if_exists='replace')
+    print("\tdone creating zone_definitions")
+
+def import_fca_output(db_fh):
+    print("\t Importing floating_catchment_output")
+    cf = pd.read_csv("raw/fca_output.csv")
+    cf = cf.loc[:, ['zone_idx','accessibility_score','scenario_name']]
+    cf.to_sql('floating_catchment_output', conn, if_exists='replace')
+    print("\tdone creating floating_catchment_output")
+
+def import_zone_distance(db_fh):
+    print("\t Importing import_zone_distance")
+    cf = pd.read_csv("raw/zone_distances.csv")
+    cf = cf.loc[:, ['zone_from','zone_to','travel_distance_km', 'travel_time_notraffic_seconds', 'travel_time_traffic_seconds']]
+    cf.to_sql('zone_distance', conn, if_exists='replace')
+    print("\tdone creating import_zone_distance")
+
 if __name__ == "__main__":    
     db_name = input("input database name for output:")
     print("Creating SQLite Database...")
     conn = sqlite3.connect(f'{db_name}.db')
-    import_fire_incidents(conn)
-    import_calls_for_service(conn)
-    import_category_mapping(conn)
-    import_nearest_distances(conn)
+    #import_fire_incidents(conn)
+    #import_calls_for_service(conn)
+    #import_category_mapping(conn)
+    #import_nearest_distances(conn)
     import_fire_stations(conn)
+    import_zone_definitions(conn)
+    import_fca_output(conn)
+    import_zone_distance(conn)
+    print("Finished")

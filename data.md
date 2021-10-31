@@ -235,5 +235,14 @@ CREATE TABLE IF NOT EXISTS "floating_catchment_output" (
 );
 ```
 
+#### Additional Catchment Notes
+
+The below image shows the "baseline" (*scenario_name*) from the outputs.
+ * The blue text is the zone_idx, which is shown over each square zone (note: zones touch, but a gap is left in the visualization for easier color differentiation)
+ * The red dots are existing fire stations
+ * The color is the accessibility, red means lower accessibility (lower score = slower response times), green is higher accessibility (higher score = faster response time)
+
+![Floating Catchment Outputs](https://github.gatech.edu/cse6242TeamDataWranglers/firstrespondersites/blob/master/img/2sfca.png?raw=true "Floating Catchment Outputs")
+
 
 

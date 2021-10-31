@@ -1,6 +1,12 @@
 # SF Fire Data - v1
 
-Tables from the sqlite **v1** file
+## Click here to download the [sqlite v1 file](https://gtvault-my.sharepoint.com/:u:/g/personal/manderson334_gatech_edu/EU1zCVuj55BCrWVUERP0QKYB5YjXZW-rMIzyZovmFETwFA?e=JyvxNT)
+
+## Querying
+
+* (Example of using pandas/sqlite)[https://kontext.tech/column/python/414/pandas-read-from-sqlite-database]
+* Pandas supports the ability to [read entire tables](https://pandas.pydata.org/pandas-docs/version/0.15.0/generated/pandas.read_sql_table.html#pandas.read_sql_table) or read [sql queries](https://pandas.pydata.org/pandas-docs/version/0.15.0/generated/pandas.read_sql_query.html#pandas.read_sql_query)
+* Visual Studio Code and the SQLite Extension (by alexcvzz) provides decent raw querying support for sqlite
 
 ## SQLite Schema
 

@@ -1,4 +1,4 @@
-# SF Fire Data - v1
+# SF Fire Data - v3
 
 ## Click here to download the [sqlite v1 file](https://gtvault-my.sharepoint.com/:u:/g/personal/manderson334_gatech_edu/EU1zCVuj55BCrWVUERP0QKYB5YjXZW-rMIzyZovmFETwFA?e=JyvxNT)
 
@@ -163,8 +163,77 @@ CREATE TABLE IF NOT EXISTS "nearest_distances" (
   "nearest_station" REAL
 );
 ```
+### City Facilities 
 
+* **Description** provides the Fire and Police facilities currently located within San Francisco
+* **Relationships:** There are no key mappings provided directly.  Relationships must be inferred from *unit_id* in the *calls_for_service_table*.  Each ENGINE and TRUCK unit (see *unit_type*) has a number associated with it.  This number assigns it to a fire station, e.g. ENGINE #3 and TRUCK #3 are assigned to Fire Station #3 (using *common_name*).
 
+```
+CREATE TABLE IF NOT EXISTS "fire_stations" (
+"index" INTEGER,
+  "facility_id" INTEGER,
+  "common_name" TEXT,
+  "address" TEXT,
+  "city" TEXT,
+  "zip_code" INTEGER,
+  "block_lot" TEXT,
+  "owned_leased" TEXT,
+  "dept_id_for_jurisdiction" INTEGER,
+  "jurisdiction" TEXT,
+  "gross_sq_ft" REAL,
+  "longitude" REAL,
+  "latitude" REAL,
+  "supervisor_district" INTEGER,
+  "city_tenants" REAL,
+  "land_id" REAL
+);
+```
+
+### Zone Definitions
+
+* **Description:** To conduct our analysis, we divide the San Franciso city into 1/3rd mile squares called "zones".  This file contains the geographic definitions of the zones, which are used in the catchment output.
+* **Relationships:** Both the *floating_catchment_output* (zone_idx) table and the *zone_distance* (zone_from, zone_to) table makes use of the zone_idx
+* **Note:** Zones are expressed as polygons of lat/lons.  The centroid is the point in the center of each zone.
+
+```
+CREATE TABLE IF NOT EXISTS "zone_definitions" (
+"index" INTEGER,
+  "zone_idx" INTEGER,
+  "zone" TEXT,
+  "centroid" TEXT
+);
+```
+### Zone Distance
+
+* **Description:**  From the BingMaps API, the travel distance and travel times with and without traffic between the centroid of each zone described in the *zone_defintions* table.
+* **Relationships:** The *zone_definitions* and *floating_catchment_output*.  The "zone_from" and "zone_to" relate to the  zone_idx fields in these tables.
+* **Note:** The amount of travel time w/ traffic is under "Mild" traffic conditions, e.g. normal traffic.
+
+```
+CREATE TABLE IF NOT EXISTS "zone_distance" (
+"index" INTEGER,
+  "zone_from" INTEGER,
+  "zone_to" INTEGER,
+  "travel_distance_km" REAL,
+  "travel_time_notraffic_seconds" INTEGER,
+  "travel_time_traffic_seconds" INTEGER
+);
+```
+
+### Floating Catchment Outputs
+
+* **Description:**  The accessibility score outputs (from the algorithm). 
+* **Relationships:** The *zone_definitions* and *floating_catchment_output*.  The "zone_from" and "zone_to" relate to the  zone_idx fields in these tables.
+* **Note:** The accessibility_score shows how well covered the area.  Higher scores mean there is better coverage (lower response times).  The *scenario_name* field will be used to simulate placements of different fire_stations.  The only value currently is "baseline", which is the accessibility before adding any new stations.  In the future, this will hold new scenario sets (accessibility scores for the entire map) that reflect placement of a new simulated fire station in a zone, e.g. "simulation_193" will be the set of accessibility scores when a new fire station is placed in zone 193.
+
+```
+CREATE TABLE IF NOT EXISTS "floating_catchment_output" (
+"index" INTEGER,
+  "zone_idx" INTEGER,
+  "accessibility_score" REAL,
+  "scenario_name" TEXT
+);
+```
 
 
 

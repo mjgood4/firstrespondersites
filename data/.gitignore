@@ -4,4 +4,4 @@ raw/
 *.tmp
 .bingapikey
 distance_output/
-
+*.csv

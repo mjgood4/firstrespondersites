@@ -120,8 +120,8 @@
             <b>Visualization Type:</b><select>
               <option>Spatial Accessability</option>
             </select>
-            <div id="controls_spatial_accessibility" style="padding: 20px 0px;">
-              <div style="font-style: italic; padding: 0 10px;">
+            <div id="controls_spatial_accessibility" style="padding: 20px 10px;">
+              <div style="font-style: italic;">
                 <i class="fa-solid fa-circle-question"></i>
                 This visualization shows the number of available fire units per 1000 incidents for each sector of the
                 map:
@@ -129,10 +129,19 @@
                 <li>Click on a square in the grid to <u>simulate</u> placement of a new fire station at that location.
                 </li>
               </div>
+              <br/>
               <button id="reset_fca">Reset Visualization</button>
-            </div>
+            </div>            
+          </div>                    
+          <div class="shadow" style="margin-top: 30px; padding: 20px 10px;">
+            <p>Number of Annual Incidents (000s): XXX</p>
+            <p>Number of Available Fire Units: XXX</p>
+            <p>Number of Annual Incidents (000s) per unit: XXX</p>
           </div>
-        </td>S
+          <div class="shadow" style="margin-top: 30px; padding: 20px 10px;">
+            <p>todo: legend</p>
+          </div>
+        </td>
         <td>
           <div id="visualization" class="shadow" style="margin-left: 50px; width: 1300px; padding-left: 20px;"></div>
         </td>
@@ -159,6 +168,7 @@
     const mapGrid = svg.append("g").attr("id", "map_grid");
     const mapLegend = svg.append("g").attr("id", "map_legend");
     const simulationFacility = svg.append("g").attr("id", "simulation_facility");
+    
 
     Promise.all([
       //d3.dsv(",", "ratings-by-country.csv"),
@@ -179,13 +189,25 @@
 
       const mapCtx = setupMap(sfMapData);
 
-      refreshData(mapCtx, {
-        sfFacilityData: sfFacilityData,
-        mapGridData: mapGridData,
-        baselineFcaOutput: baselineFcaOutput,
-        travelTime: travelTime,
-        simulationFcaOutput: simulationFcaOutput
+      function drawMap() {
+        facilities.selectAll("*").remove();
+        mapGrid.selectAll("*").remove();
+        mapLegend.selectAll("*").remove();
+        simulationFacility.selectAll("*").remove();
+
+        refreshData(mapCtx, {
+          sfFacilityData: sfFacilityData,
+          mapGridData: mapGridData,
+          baselineFcaOutput: baselineFcaOutput,
+          travelTime: travelTime,
+          simulationFcaOutput: simulationFcaOutput
+        });
+      }
+
+      $("#reset_fca").click(function(evt) {
+        drawMap();
       });
+      drawMap();
     });
 
     function preprocessSimulationData(simulationData) {
@@ -205,7 +227,7 @@
 
       const gridDrawer = setupGridDrawer(mapCtx, data.mapGridData, data.baselineFcaOutput);
       const mapGridCells = gridDrawer(data.baselineFcaOutput);
-
+      
       setupEventHandlers(mapCtx, data, mapGridCells, gridDrawer);
     }
 

@@ -69,9 +69,8 @@ limit 1000
 
 select * from category_mappings
 
-select fire_stations.common_name
-, Unit
-, count(*)
+select 
+, floating_catchment_output.zone_idx
 , avg(floating_catchment_output.accessibility_score)
 from floating_catchment_output
 inner join zone_idx_to_incident on 
@@ -99,4 +98,5 @@ from floating_catchment_output
 where scenario_name = 'baseline'
 
 select *
-from Truck_Engine_Fire_Station
+from floating_catchment_output
+

@@ -100,3 +100,5 @@ where scenario_name = 'baseline'
 select *
 from floating_catchment_output
 
+select distinct calls_for_service.analysis_neighborhoods
+from calls_for_service

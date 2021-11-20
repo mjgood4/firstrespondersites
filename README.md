@@ -1,5 +1,9 @@
 # First Responder Sites
 
+## Running the visualization
+
+* [Click here to start the interactive D3 visualization](https://github.gatech.edu/pages/cse6242TeamDataWranglers/firstrespondersites/visualization/)
+
 ## Running code from this repository
 
 **The recommended setup uses MacOS / Linux operating systems, Windows has not been tested**
@@ -17,7 +21,7 @@
   * *import_data.py* - prepares the SQLite database from the flat files and sources described in data.md.
 
 * **notebooks/** - Python notebooks for modeling work
-  * *2SFCA Response Time Correlations.ipynb* - Modeling work for the kernel density estimates and two-step floating catchment algorithm (2SFCA).  Also outputs files for the visualization and SQLite database.
+  * *2SFCA* - Does all the heavy-lifting for modeling work.  The **outputs of this notebook are provided for interactive visualization by the d3 tool in the visualization/ directory**.  This notebook performs the spatial statistics modeling, including **kernel density estimates** and **two-step floating catchment algorithm (2SFCA)**.  
 
 * **visualization/** - Visualization of the modeling work
 

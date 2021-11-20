@@ -168,10 +168,6 @@
     const mapGrid = svg.append("g").attr("id", "map_grid");
     const mapLegend = svg.append("g").attr("id", "map_legend");
     const simulationFacility = svg.append("g").attr("id", "simulation_facility");
-<<<<<<< HEAD
-=======
-    
->>>>>>> master
 
     Promise.all([
       //d3.dsv(",", "ratings-by-country.csv"),
@@ -319,8 +315,11 @@
           isFirstDraw = false;
         } else {
           for (let zoneIdx in valLookup) {
+            let currVal = valLookup[zoneIdx];
+            currVal = (currVal > valMax)? valMax : currVal;
+            currVal = (currVal < valMin)? valMin : currVal;
             d3.select("#zone_idx_" + zoneIdx)
-              .attr("fill", colorScale(valLookup[zoneIdx]));
+              .attr("fill", colorScale(currVal));
           }
         }
 
@@ -377,11 +376,6 @@
           .attr("cy", clickCoords.y)
           .attr("fill", "purple")
           .attr("r", 10)
-
-<<<<<<< HEAD
-=======
-
->>>>>>> master
       }).on("mouseover", (x) => {
 
         resetColors();

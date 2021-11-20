@@ -70,16 +70,16 @@
                 <i class="fa-solid fa-circle-question" style="color: blue; font-size: 20px;"></i>
                 <span style="color: blue;">How to use this visualization:</span>
                 <ul>
-                  <li>This visualization allows you to simulate the placement of a new fire station in San Francisco. <small>The visualization uses the results of the Kernel Density Estimation and the Two-Step Floating Catchment Area (2SFCA) algorithm.</small></li>
-                  <li><b>Hover</b> over the map to see the estimated area the fire station could respond to in under 5 minutes, if a new station is place in that area.
+                  <li>This visualization allows you to <b>simulate</b> the placement of a new fire station in San Francisco. <small>The visualization uses the results of the Kernel Density Estimation and the Two-Step Floating Catchment Area (2SFCA) algorithm.</small></li>
+                  <li><b>Hover</b> over the map to see the estimated area the fire station could respond to in under 5 minutes, if a new station is placed in that area.
                     <br><small>The estimated area shown is sourced from the BingMaps API.  Note that proximity to interstates and highways will greatly affect the size and shape of this area.</small></li>
                     <li><b>Click</b> the map to simulate placing a fire station at that location.
-                      <small>The size of the impact (colors) is determined by the 2SFCA algorithm.  The data is precomputed in the Python Notebooks accompanying this project.</small>
+                      <small>The size of the impact (colors) is determined by the 2SFCA algorithm.  The data is precomputed in the Python notebooks created for this project.</small>
                       <br></li>
                 </ul>                
               </div>
               <br/>
-              <button id="reset_fca">Reset Visualization</button>
+              <button id="reset_fca" style="font-size: 14pt; float: right;"><i class="fa-solid fa-undo" style="font-size: 20px;"></i> Reset Visualization</button>
             </div>            
           </div>                              
           <div class="shadow" style="margin-top: 20px; padding: 10px 10px;">
@@ -90,7 +90,7 @@
         <td>          
           <div id="visualization" class="shadow" style="margin-left: 20px; width: 1300px; padding: 20px 0px;">
             <div style="padding-left: 50px;">
-              <b style="font-size: 12pt; padding-right: 5px;"><i style="font-size: 12pt;" class="fa-solid fa-mouse-pointer"></i> Current Location Data:</b>
+              <b style="font-size: 12pt; padding-right: 5px;"><i style="font-size: 12pt;" class="fa-solid fa-mouse-pointer"></i> Current data (2019 actuals):</b>
                 <span class="data_value"># Daily Fire Incidents: XXX</span>
                 <span class="data_value"># Available Fire Units: XXX</span>
                 <span class="data_value"># Units per Incident: XXX</span>
@@ -130,13 +130,13 @@
     const simulationFacility = svg.append("g").attr("id", "simulation_facility");
 
     Promise.all([
-      //d3.dsv(",", "ratings-by-country.csv"),
       d3.json("data/sf_neighborhoods.geojson"),
       d3.json("data/grid_definitions.geojson"),
       d3.json("data/current_fire_stations.geojson"),
       d3.dsv(",", "data/baseline_fca_output.csv"),
       d3.dsv(",", "data/travel_time.csv"),
-      d3.dsv(",", "data/simulation_fca_output.csv")
+      d3.dsv(",", "data/simulation_fca_output.csv"),
+      d3.dsv(",", "data/demand_data.csv")
     ]).then(function (data) {
 
       const sfMapData = data[0];
@@ -145,6 +145,7 @@
       const baselineFcaOutput = data[3];
       const travelTime = data[4];
       const simulationFcaOutput = preprocessSimulationData(data[5]);
+      const demandData = data[6];      
 
       const mapCtx = setupMap(sfMapData);
 
@@ -161,7 +162,8 @@
           mapGridData: mapGridData,
           baselineFcaOutput: baselineFcaOutput,
           travelTime: travelTime,
-          simulationFcaOutput: simulationFcaOutput
+          simulationFcaOutput: simulationFcaOutput,
+          demandData: demandData
         });
       }
 
@@ -291,13 +293,54 @@
       return simulations;
     }
 
+    /*
+      Rather than precomputing everything for everywhere the user could click, this function
+      uses "partial application" (in the functional programming sense) to compute values "just-in-time".      
+    */
+    function createTooltipDataProcessor(baselineFcaOutput, simulationFcaOutput, demandDataRaw) {
+      
+      // shallow copy the data, and merge it all together
+      const allData = Object.assign({}, simulationFcaOutput);
+      allData["baseline"] = baselineFcaOutput;
+
+      // process the demand data into a lookup table w/ numeric values
+      const demandData = {}
+      demandDataRaw.forEach(demandRow => {
+        demandData[demandRow.zone_idx] = Number.parseFloat(demandRow.number_of_calls);
+      });      
+      
+      // use partial application to create a tooltip processor for the scenario
+      // the first selects the scenario, the second displays the data for the point 
+      return (scenarioName) => {
+        
+        if (!(scenarioName in allData)) {
+          return (zoneIdx) => "<no data>";
+        }
+        
+        const selectedScenarioData = allData[scenarioName];
+        const currentScenarioTooltip = {};
+        selectedScenarioData.forEach((scenarioRow) => {
+          currentScenarioTooltip[scenarioRow.zone_idx] = {
+            "incidentsPerDay": demandData[scenarioRow.zone_idx],
+            "availableUnits": Math.round(scenarioRow.accessibility_score * demandData[scenarioRow.zone_idx]),
+            "accessibilityScore": scenarioRow.accessibility_score
+          }
+        });
+
+        // return a function which can use the data we just precomputed
+        return (zoneIdx) => currentScenarioTooltip[zoneIdx];
+      }
+    }
+
     function refreshData(mapCtx, data) {
       const facilities = drawFacilities(mapCtx, data.sfFacilityData);
 
       const gridDrawer = setupGridDrawer(mapCtx, data.mapGridData, data.baselineFcaOutput);
-      const mapGridCells = gridDrawer(data.baselineFcaOutput);      
+      const mapGridCells = gridDrawer(data.baselineFcaOutput);
+
+      const toolTipDataProcessor = createTooltipDataProcessor(data.baselineFcaOutput, data.simulationFcaOutput, data.demandData);
       
-      setupEventHandlers(mapCtx, data, mapGridCells, gridDrawer);
+      setupEventHandlers(mapCtx, data, mapGridCells, gridDrawer, toolTipDataProcessor);
     }
 
     function setupMap(geoObj) {
@@ -431,12 +474,14 @@
       return gridDrawer;
     }
 
-    function setupEventHandlers(mapCtx, data, mapGridCells, gridDrawer) {
+    function setupEventHandlers(mapCtx, data, mapGridCells, gridDrawer, toolTipDataProcessor) {
 
       const travelTimeLookup = {};
       const originalColors = {};
       const travelTime = data.travelTime;
       const simulationData = data.simulationFcaOutput;
+      
+      let currentTooltipProcessor = toolTipDataProcessor("baseline");
 
       // build a lookup structure for each grid cell indicating which other cells can
       // be traveled to within 5 minutes
@@ -478,6 +523,10 @@
           .attr("cy", clickCoords.y)
           .attr("fill", "purple")
           .attr("r", 10)
+
+        // create a new tooltip processor for our scenario
+        currentTooltipProcessor = toolTipDataProcessor(simulationKey);
+        
       }).on("mouseover", (x) => {
 
         resetColors();
@@ -496,6 +545,10 @@
           d3.selectAll(elementsToColor.join(","))
             .attr("fill", "purple");
         }
+
+        // populate the tooltip
+        const tooltipData = currentTooltipProcessor(zoneIdx);
+
       }).on("mouseout", (x) => {
         let zoneIdx = x.properties.zone_idx + "";
         d3.select("#zone_idx_" + zoneIdx).attr("stroke", "none");

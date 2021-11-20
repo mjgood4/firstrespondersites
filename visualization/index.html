@@ -35,16 +35,25 @@
   <style>
     body {
       margin: 40px;
+      color: black;
+    }
+    #visualization_help li {
+      margin-top: 20px;
+    }
+    small {
+      color: #888;
+    }
+    .data_value {
+      margin-left: 25px;
     }
   </style>
 
   <title></title>
 </head>
 
-
 <body>
   <!-- Add heading for the visualization -->
-  <h1 style="color: #0e95ef;">San Francisco Response Times Visualization</h1>
+  <h1 style="color: #0e95ef;">San Francisco: Where to build a new fire station?</h1>
 
   <!-- https://gridbyexample.com/examples/example16/ -->
   <div class="wrapper container-fixed" style="padding-top: 50px;">
@@ -52,33 +61,42 @@
       <tr>
         <td style="min-width: 500px; vertical-align: top;">
           <div class="shadow" style="padding: 20px 10px;">
-            <b>Visualization Type:</b><select>
-              <option>Spatial Accessability</option>
+            <b style="font-size: 18pt; padding-right: 5px;"><i style="font-size: 20pt;" class="fa-solid fa-sliders-h"></i> Current Visualization:</b>
+            <select style="font-size: 14pt;">
+              <option>New Firestation Simulation</option>
             </select>
             <div id="controls_spatial_accessibility" style="padding: 20px 10px;">
-              <div style="font-style: italic;">
-                <i class="fa-solid fa-circle-question"></i>
-                This visualization shows the number of available fire units per 1000 incidents for each sector of the
-                map:
-                <li>Areas with a low number of </li>
-                <li>Click on a square in the grid to <u>simulate</u> placement of a new fire station at that location.
-                </li>
+              <div id="visualization_help" style="font-size: 14pt; max-width: 600px;">
+                <i class="fa-solid fa-circle-question" style="color: blue; font-size: 20px;"></i>
+                <span style="color: blue;">How to use this visualization:</span>
+                <ul>
+                  <li>This visualization allows you to simulate the placement of a new fire station in San Francisco. <small>The visualization uses the results of the Kernel Density Estimation and the Two-Step Floating Catchment Area (2SFCA) algorithm.</small></li>
+                  <li><b>Hover</b> over the map to see the estimated area the fire station could respond to in under 5 minutes, if a new station is place in that area.
+                    <br><small>The estimated area shown is sourced from the BingMaps API.  Note that proximity to interstates and highways will greatly affect the size and shape of this area.</small></li>
+                    <li><b>Click</b> the map to simulate placing a fire station at that location.
+                      <small>The size of the impact (colors) is determined by the 2SFCA algorithm.  The data is precomputed in the Python Notebooks accompanying this project.</small>
+                      <br></li>
+                </ul>                
               </div>
               <br/>
               <button id="reset_fca">Reset Visualization</button>
             </div>            
-          </div>                    
-          <div class="shadow" style="margin-top: 30px; padding: 20px 10px;">
-            <p>Number of Annual Incidents (000s): XXX</p>
-            <p>Number of Available Fire Units: XXX</p>
-            <p>Number of Annual Incidents (000s) per unit: XXX</p>
-          </div>
-          <div class="shadow" style="margin-top: 30px; padding: 20px 10px;">
-            <p>todo: legend</p>
+          </div>                              
+          <div class="shadow" style="margin-top: 20px; padding: 10px 10px;">
+            <b style="font-size: 18pt; padding-right: 5px;"><i style="font-size: 20pt;" class="fa-solid fa-map"></i> Map Legend</b>
+            <div id="visualization_legend"></div>
           </div>
         </td>
-        <td>
-          <div id="visualization" class="shadow" style="margin-left: 50px; width: 1300px; padding-left: 20px;"></div>
+        <td>          
+          <div id="visualization" class="shadow" style="margin-left: 20px; width: 1300px; padding: 20px 0px;">
+            <div style="padding-left: 50px;">
+              <b style="font-size: 12pt; padding-right: 5px;"><i style="font-size: 12pt;" class="fa-solid fa-mouse-pointer"></i> Current Location Data:</b>
+                <span class="data_value"># Daily Fire Incidents: XXX</span>
+                <span class="data_value"># Available Fire Units: XXX</span>
+                <span class="data_value"># Units per Incident: XXX</span>
+            </div>
+          
+          </div>
         </td>
       </tr>
     </table>
@@ -96,6 +114,13 @@
       .attr("id", "map")
       .attr("height", "1000")
       .attr("width", "1200")
+      .attr("style", "background-color: e5f0f9; margin-left: 50px;")
+
+    const svgLegend = d3
+      .select("#visualization_legend")
+      .append("svg")
+      .attr("height", "300")
+      .attr("width", "600")
 
     // create the map layers
     const baseMap = svg.append("g").attr("id", "base_map");
@@ -129,6 +154,8 @@
         mapLegend.selectAll("*").remove();
         simulationFacility.selectAll("*").remove();
 
+        drawSimulationLegend()        
+
         refreshData(mapCtx, {
           sfFacilityData: sfFacilityData,
           mapGridData: mapGridData,
@@ -143,6 +170,114 @@
       });
       drawMap();
     });
+
+    function drawSimulationLegend() {
+      svgLegend.selectAll("*").remove();
+      
+      const fireSymbol = svgLegend
+        .append("circle")
+        .attr("r", "10")
+        .attr("fill", "red")
+        .attr("cx", "30")
+        .attr("cy", "30")
+
+      const fireLabel = svgLegend
+        .append("text")                
+        .attr("x", "50")
+        .attr("y", "35")
+        .attr("style", "font-size: 14pt;")
+        .text("Existing fire station")
+
+      const simSymbol = svgLegend
+        .append("circle")
+        .attr("r", "10")
+        .attr("fill", "purple")
+        .attr("cx", "300")
+        .attr("cy", "30")
+
+      const simLabel = svgLegend
+        .append("text")                
+        .attr("x", "325")
+        .attr("y", "35")
+        .attr("style", "font-size: 14pt;")
+        .text("New fire station (simulated point)")
+
+      const simAreaSymbol = svgLegend
+        .append("rect")
+        .attr("width", "20")
+        .attr("height", "20")
+        .attr("fill", "rgb(196, 141, 221)")
+        .attr("x", "290")
+        .attr("y", "60")
+
+      const simAreaLabel = svgLegend
+        .append("text")                
+        .attr("x", "325")
+        .attr("y", "70")
+        .attr("style", "font-size: 14pt;")
+        .text("New fire station coverage area")
+
+        const simAreaLabel2 = svgLegend
+        .append("text")                
+        .attr("x", "325")
+        .attr("y", "90")
+        .attr("style", "font-size: 12pt;")
+        .text("(<= 5 minute travel time)")
+      
+      const spatialYOffset = 130;
+
+      const spatialLabel = svgLegend
+        .append("text")                
+        .attr("x", "20")
+        .attr("y", (spatialYOffset + 0) + "")
+        .text("Spatial Accessibility (2SFCA):")
+        .attr("style", "font-size: 14pt; font-weight: bold;")
+      
+      const colorLegendHigh = svgLegend
+        .append("rect")
+        .attr("width", "20")
+        .attr("height", "20")
+        .attr("x", "40")
+        .attr("y", (spatialYOffset + 15) + "")
+        .attr("fill", "rgb(44,150,0)")
+
+      const highLabel = svgLegend
+        .append("text")                
+        .attr("x", "70")
+        .attr("y", (spatialYOffset + 30) + "")
+        .attr("style", "font-size: 12pt;")
+        .text("High # of available fire units per incident")
+
+      const colorLegendMid = svgLegend
+        .append("rect")
+        .attr("width", "20")
+        .attr("height", "20")
+        .attr("x", "40")
+        .attr("y", (spatialYOffset + 50) + "")
+        .attr("fill", "rgb(239,230,100)")        
+
+      const midLabel = svgLegend
+        .append("text")                
+        .attr("x", "70")
+        .attr("y", (spatialYOffset + 65) + "")
+        .attr("style", "font-size: 12pt;")
+        .text("Avg # of available fire units per incident")
+
+      const colorLegendLow = svgLegend
+        .append("rect")
+        .attr("width", "20")
+        .attr("height", "20")
+        .attr("x", "40")
+        .attr("y", (spatialYOffset + 85) + "")
+        .attr("fill", "rgb(239,107,100)")        
+
+      const lowLabel = svgLegend
+        .append("text")                
+        .attr("x", "70")
+        .attr("y", (spatialYOffset + 100) + "")
+        .attr("style", "font-size: 12pt;")
+        .text("Low # of available fire units per incident")
+    }
 
     function preprocessSimulationData(simulationData) {
       let simulations = {};
@@ -160,7 +295,7 @@
       const facilities = drawFacilities(mapCtx, data.sfFacilityData);
 
       const gridDrawer = setupGridDrawer(mapCtx, data.mapGridData, data.baselineFcaOutput);
-      const mapGridCells = gridDrawer(data.baselineFcaOutput);
+      const mapGridCells = gridDrawer(data.baselineFcaOutput);      
       
       setupEventHandlers(mapCtx, data, mapGridCells, gridDrawer);
     }
@@ -177,13 +312,45 @@
       )
       const path = d3.geoPath().projection(projection)
 
+      const scale = baseMap.append("g")
+
+      const scaleOffsetY = 50
+      const scaleOffsetX = 50
+
+      scale.append("rect")
+        .attr("width", "140")
+        .attr("height", "2.5")
+        .attr("x", (scaleOffsetX + 0) + "")
+        .attr("y", (scaleOffsetY + 15) + "")
+        .attr("fill", "gray")
+
+      scale.append("rect")
+        .attr("width", "2.5")
+        .attr("height", "35")
+        .attr("x", (scaleOffsetX + 0) + "")
+        .attr("y", (scaleOffsetY + 0) + "")
+        .attr("fill", "gray")
+
+      scale.append("rect")
+        .attr("width", "2.5")
+        .attr("height", "35")
+        .attr("x", (scaleOffsetX + 140) + "")
+        .attr("y", (scaleOffsetY + 0) + "")
+        .attr("fill", "gray")
+
+      scale.append("text")
+        .attr("x", (scaleOffsetX + 40) + "")
+        .attr("y", (scaleOffsetY + 5) + "")
+        .attr("fill", "gray")
+        .text("one mile")
+
       baseMap.selectAll("path")
         .data(geoObj.features)
         .enter()
         .append("path")
         .attr("d", (feature) => path(feature))
         .attr("fill", "white")
-        .attr("stroke", "gray")
+        .attr("stroke", "gray") 
 
       return {
         projection: projection,

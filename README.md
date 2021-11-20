@@ -13,11 +13,13 @@
 * **[data.md](data.md)** - Descriptions and sources of data used in this project, and the schema for the SQLite file.
 
 * **data/** - Scripts to load and prepare data the analytics database (SQLite file)
-  * *query_travel_times.py* fetches travel times (including estimated traffic impacts) between points in San Francisco from the BingMaps API.  Requires an API key.
-  * *import_data.py* prepares the SQLite database from 
+  * *query_travel_times.py* - fetches travel times (including estimated traffic impacts) between points in San Francisco from the BingMaps API.  Requires a Bing Maps Developer API key to be stored in the data/.bingapikey file.
+  * *import_data.py* - prepares the SQLite database from the flat files and sources described in data.md.
 
-* **notebooks/**
-  * *2SFCA Response Time Correlations.ipynb* - Modeling work for the kernel density estimates and Two-step floating catchment algorithm (2SFCA)
+* **notebooks/** - Python notebooks for modeling work
+  * *2SFCA Response Time Correlations.ipynb* - Modeling work for the kernel density estimates and two-step floating catchment algorithm (2SFCA).  Also outputs files for the visualization and SQLite database.
+
+* **visualization/** - Visualization of the modeling work
 
 ## Team Members:
 * Jude Yakamavage

@@ -2,7 +2,7 @@
 
 ## Running code from this repository
 
-**The recommended setup is for MacOS / Linux operating systems **
+**The recommended setup uses MacOS / Linux operating systems, Windows has not been tested**
 
 1. Setup the conda environment using the conda_env.yml and Python version 3.8.11.  
 2. Clone the repository

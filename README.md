@@ -10,7 +10,7 @@
 
 ## Repository Overview
 
-* **data.md** - Descriptions and sources of data used in this project, and the schema for the SQLite file.
+* **[data.md](data.md)** - Descriptions and sources of data used in this project, and the schema for the SQLite file.
 
 * **data/** - Scripts to load and prepare data the analytics database (SQLite file)
  * *query_travel_times.py* fetches travel times (including estimated traffic impacts) between points in San Francisco from the BingMaps API.  Requires an API key.

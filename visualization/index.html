@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+
+  <!-- add title -->
+  <title>San Francisco Response Times</title>
+
+  <!-- import required libraries here -->
+  <script type="text/javascript" src="lib/d3.v5.min.js"></script>
+  <script type="text/javascript" src="lib/d3-dsv.min.js"></script>
+  <script type="text/javascript" src="lib/d3-geo-projection.v2.min.js"></script>
+  <script type="text/javascript" src="lib/topojson.v2.min.js"></script>
+  <script type="text/javascript" src="lib/d3-tip.min.js"></script>
+  <script type="text/javascript" src="lib/d3-legend.min.js"></script>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+    crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="lib/sb-admin-2.min.css">
+  </link>
+  <link rel="stylesheet" href="lib/fa-all.min.css">
+  </link>
+  <script type="text/javascript" src="lib/sb-admin-2.min.js"></script>
+
+
+  <style>
+    body {
+      margin: 40px;
+    }
+
+    .sidebar {
+      grid-area: sidebar;
+    }
+
+    .content {
+      grid-area: content;
+      position: relative;
+    }
+
+    .header {
+      grid-area: header;
+    }
+
+    .footer {
+      grid-area: footer;
+    }
+
+    .wrapper {
+      display: grid;
+      grid-gap: 10px;
+      grid-template-columns: 200px 200px 200px;
+      grid-template-areas:
+        "header  header  header"
+        "sidebar content content"
+        "footer  footer  footer";
+      background-color: #fff;
+      color: #444;
+    }
+
+
+    .box {
+      background-color: #444;
+      color: #fff;
+      border-radius: 5px;
+      padding: 50px;
+      font-size: 150%;
+    }
+
+    .header,
+    .footer {
+      background-color: #999;
+    }
+
+    .topleft {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .topright {
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
+
+    .bottomleft {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+    }
+
+    .bottomright {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+    }
+  </style>
+
+  <title></title>
+</head>
+
+
+<body>
+  <!-- Add heading for the visualization -->
+  <h1 style="color: #0e95ef;">San Francisco Response Times Visualization</h1>
+
+  <!-- https://gridbyexample.com/examples/example16/ -->
+  <div class="wrapper container-fixed" style="padding-top: 50px;">
+    <table>
+      <tr>
+        <td style="min-width: 500px; vertical-align: top;">
+          <div class="shadow" style="padding: 20px 10px;">
+            <b>Visualization Type:</b><select>
+              <option>Spatial Accessability</option>
+            </select>
+            <div id="controls_spatial_accessibility" style="padding: 20px 10px;">
+              <div style="font-style: italic;">
+                <i class="fa-solid fa-circle-question"></i>
+                This visualization shows the number of available fire units per 1000 incidents for each sector of the
+                map:
+                <li>Areas with a low number of </li>
+                <li>Click on a square in the grid to <u>simulate</u> placement of a new fire station at that location.
+                </li>
+              </div>
+              <br/>
+              <button id="reset_fca">Reset Visualization</button>
+            </div>            
+          </div>                    
+          <div class="shadow" style="margin-top: 30px; padding: 20px 10px;">
+            <p>Number of Annual Incidents (000s): XXX</p>
+            <p>Number of Available Fire Units: XXX</p>
+            <p>Number of Annual Incidents (000s) per unit: XXX</p>
+          </div>
+          <div class="shadow" style="margin-top: 30px; padding: 20px 10px;">
+            <p>todo: legend</p>
+          </div>
+        </td>
+        <td>
+          <div id="visualization" class="shadow" style="margin-left: 50px; width: 1300px; padding-left: 20px;"></div>
+        </td>
+      </tr>
+    </table>
+  </div>
+  </div>
+
+
+  <!-- d3 code below -->
+  <script>
+
+    //const svg = d3.select("#map")            
+    const svg = d3
+      .select("#visualization")
+      .append("svg")
+      .attr("id", "map")
+      .attr("height", "1000")
+      .attr("width", "1200")
+
+    // create the map layers
+    const baseMap = svg.append("g").attr("id", "base_map");
+    const facilities = svg.append("g").attr("id", "facilities");
+    const mapGrid = svg.append("g").attr("id", "map_grid");
+    const mapLegend = svg.append("g").attr("id", "map_legend");
+    const simulationFacility = svg.append("g").attr("id", "simulation_facility");
+
+    Promise.all([
+      //d3.dsv(",", "ratings-by-country.csv"),
+      d3.json("data/sf_neighborhoods.geojson"),
+      d3.json("data/grid_definitions.geojson"),
+      d3.json("data/current_fire_stations.geojson"),
+      d3.dsv(",", "data/baseline_fca_output.csv"),
+      d3.dsv(",", "data/travel_time.csv"),
+      d3.dsv(",", "data/simulation_fca_output.csv")
+    ]).then(function (data) {
+
+      const sfMapData = data[0];
+      const mapGridData = data[1];
+      const sfFacilityData = data[2];
+      const baselineFcaOutput = data[3];
+      const travelTime = data[4];
+      const simulationFcaOutput = preprocessSimulationData(data[5]);
+
+      const mapCtx = setupMap(sfMapData);
+
+      function drawMap() {
+        facilities.selectAll("*").remove();
+        mapGrid.selectAll("*").remove();
+        mapLegend.selectAll("*").remove();
+        simulationFacility.selectAll("*").remove();
+
+        refreshData(mapCtx, {
+          sfFacilityData: sfFacilityData,
+          mapGridData: mapGridData,
+          baselineFcaOutput: baselineFcaOutput,
+          travelTime: travelTime,
+          simulationFcaOutput: simulationFcaOutput
+        });
+      }
+
+      $("#reset_fca").click(function(evt) {
+        drawMap();
+      });
+      drawMap();
+    });
+
+    function preprocessSimulationData(simulationData) {
+      let simulations = {};
+      simulationData.forEach(x => {
+        const simName = x.scenario_name;
+        if (!(simName in simulations)) {
+          simulations[simName] = [];
+        }
+        simulations[simName].push(x);
+      });
+      return simulations;
+    }
+
+    function refreshData(mapCtx, data) {
+      const facilities = drawFacilities(mapCtx, data.sfFacilityData);
+
+      const gridDrawer = setupGridDrawer(mapCtx, data.mapGridData, data.baselineFcaOutput);
+      const mapGridCells = gridDrawer(data.baselineFcaOutput);
+      
+      setupEventHandlers(mapCtx, data, mapGridCells, gridDrawer);
+    }
+
+    function setupMap(geoObj) {
+
+      const projection = d3.geoEquirectangular()
+      projection.fitExtent(
+        [
+          [0, 0],
+          [1200, 1000],
+        ],
+        geoObj
+      )
+      const path = d3.geoPath().projection(projection)
+
+      baseMap.selectAll("path")
+        .data(geoObj.features)
+        .enter()
+        .append("path")
+        .attr("d", (feature) => path(feature))
+        .attr("fill", "white")
+        .attr("stroke", "gray")
+
+      return {
+        projection: projection,
+        path: path
+      }
+    }
+
+    function drawFacilities(mapCtx, facilityData) {
+
+      return facilities.selectAll("path")
+        .data(facilityData.features)
+        .enter()
+        .append("path")
+        .attr("d", (feature) => mapCtx.path(feature))
+        .attr("fill", "red")
+        .attr("stroke", "red")
+    }
+
+    function setupGridDrawer(mapCtx, gridDefinition, initialGridValues) {
+
+      const valMin = d3.min(initialGridValues, x => Number.parseFloat(x.accessibility_score));
+      const valMax = d3.max(initialGridValues, x => Number.parseFloat(x.accessibility_score));
+      const valMid = d3.mean(initialGridValues, x => Number.parseFloat(x.accessibility_score));
+
+      const colorScale = d3.scaleLinear()
+        .domain([valMin, valMid, valMax])
+        .range(["red", "yellow", "green"]);
+
+      // closure scoped
+      var isFirstDraw = true;
+      var mapGridCells = null;
+
+      function gridDrawer(redrawGridValues) {
+
+        if (!redrawGridValues) {
+          redrawGridValues = initialGridValues
+        }
+
+        const valLookup = {}
+        redrawGridValues.forEach(x => {
+          valLookup[x.zone_idx] = x.accessibility_score;
+        })
+
+        if (isFirstDraw) {
+          mapGridCells = mapGrid.selectAll("path")
+            .data(gridDefinition.features)
+            .enter()
+            .append("path")
+            .attr("d", (feature) => mapCtx.path(feature))
+            .attr("fill-opacity", "0.25")
+            .attr("id", (feature) => {
+              return "zone_idx_" + feature.properties.zone_idx;
+            })
+            .attr("fill", (feature) => {
+              const zoneIdx = feature.properties.zone_idx + "";
+              const zoneVal = valLookup[zoneIdx];
+              if (!zoneVal) {
+                return "white";
+              }
+              else {
+                return colorScale(zoneVal);
+              }
+            });
+          isFirstDraw = false;
+        } else {
+          for (let zoneIdx in valLookup) {
+            d3.select("#zone_idx_" + zoneIdx)
+              .attr("fill", colorScale(valLookup[zoneIdx]));
+          }
+        }
+
+        return mapGridCells;
+      }
+
+      return gridDrawer;
+    }
+
+    function setupEventHandlers(mapCtx, data, mapGridCells, gridDrawer) {
+
+      const travelTimeLookup = {};
+      const originalColors = {};
+      const travelTime = data.travelTime;
+      const simulationData = data.simulationFcaOutput;
+
+      // build a lookup structure for each grid cell indicating which other cells can
+      // be traveled to within 5 minutes
+      travelTime.forEach((r) => {
+        if (!(r.selected_zone in travelTimeLookup)) {
+          travelTimeLookup[r.selected_zone + ""] = [];
+        }
+        travelTimeLookup[r.selected_zone + ""].push(r.covered_zone);
+      });
+
+      function resetColors() {
+        let processedKeys = [];
+        for (k in originalColors) {
+          d3.select(k).attr("fill", originalColors[k])
+          processedKeys.push(k);
+        }
+        processedKeys.forEach(k => delete originalColors[k])
+      }
+
+      mapGridCells.on("click", (x) => {
+        const zoneIdx = x.properties.zone_idx + "";
+        const simulationKey = "new_station_" + zoneIdx;
+
+        resetColors();
+        if (simulationKey in simulationData) {
+          gridDrawer(simulationData[simulationKey]);
+        }
+
+        const clickCoords = {
+          x: d3.event.layerX,
+          y: d3.event.layerY
+        }
+
+        simulationFacility.selectAll("*").remove();
+
+        simulationFacility
+          .append("circle")
+          .attr("cx", clickCoords.x)
+          .attr("cy", clickCoords.y)
+          .attr("fill", "purple")
+          .attr("r", 10)
+
+      }).on("mouseover", (x) => {
+
+        resetColors();
+
+        const zoneIdx = x.properties.zone_idx + "";
+        d3.select("#zone_idx_" + zoneIdx).attr("stroke", "black");
+
+        // color the 5 minute travel time cells
+        if (zoneIdx in travelTimeLookup) {
+          const elementsToColor = travelTimeLookup[zoneIdx].map(x => "#zone_idx_" + x);
+          // store the original colors
+          elementsToColor.forEach(x => {
+            originalColors[x] = d3.select(x).attr("fill");
+          })
+          // update to be colored for the response area
+          d3.selectAll(elementsToColor.join(","))
+            .attr("fill", "purple");
+        }
+      }).on("mouseout", (x) => {
+        let zoneIdx = x.properties.zone_idx + "";
+        d3.select("#zone_idx_" + zoneIdx).attr("stroke", "none");
+        resetColors();
+      });
+    }
+
+  </script>
+
+</body>
+
+</html>

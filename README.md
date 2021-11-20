@@ -1,11 +1,23 @@
 # First Responder Sites
 
+## Running code from this repository
+
+**The recommended setup is for MacOS / Linux operating systems **
+
+1. Setup the conda environment using the conda_env.yml and Python version 3.8.11.  
+2. Clone the repository
+3. Download the [SQLite database](https://gtvault-my.sharepoint.com/:u:/g/personal/manderson334_gatech_edu/EUCVCElcpSFLswnJB7sPHowB0fpm7eIoBumUq0avyfNFIw?e=lFwjYc) into the "/data" subdirectory
+
 ## Repository Overview
 
+* **data.md** - Descriptions and sources of data used in this project, and the schema for the SQLite file.
+
 * **data/** - Scripts to load and prepare data the analytics database (SQLite file)
- * Due to its size, much of the data is not version controlled in GitHub, however the analytics database can be downloaded from here (**TODO**)
-* **notebooks/** - Modeling work for the Two-Step Floating Catchment, Kernel Density Estimation, and XGBoost Regression models
- * Two
+ * *query_travel_times.py* fetches travel times (including estimated traffic impacts) between points in San Francisco from the BingMaps API.  Requires an API key.
+ * *import_data.py* prepares the SQLite database from 
+
+* **notebooks/**
+ * *2SFCA Response Time Correlations.ipynb* - Modeling work for the kernel density estimates and Two-step floating catchment algorithm (2SFCA)
 
 ## Team Members:
 * Jude Yakamavage

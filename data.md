@@ -1,12 +1,16 @@
-# SF Fire Data - v3
+# SF Fire Data - v4
 
-## Click here to download the [sqlite v3 file](https://gtvault-my.sharepoint.com/:u:/g/personal/manderson334_gatech_edu/Ec6snsoLMqhNsyCyv6lwetUBFE7QDXQBIcvp63jB7WAebg?e=FrFpkb)
+## Click here to download the [sqlite v4 file](https://gtvault-my.sharepoint.com/:u:/g/personal/manderson334_gatech_edu/EUCVCElcpSFLswnJB7sPHowB0fpm7eIoBumUq0avyfNFIw?e=lFwjYc)
 
 ## Querying
 
 * (Example of using pandas/sqlite)[https://kontext.tech/column/python/414/pandas-read-from-sqlite-database]
 * Pandas supports the ability to [read entire tables](https://pandas.pydata.org/pandas-docs/version/0.15.0/generated/pandas.read_sql_table.html#pandas.read_sql_table) or read [sql queries](https://pandas.pydata.org/pandas-docs/version/0.15.0/generated/pandas.read_sql_query.html#pandas.read_sql_query)
 * Visual Studio Code and the SQLite Extension (by alexcvzz) provides decent raw querying support for sqlite
+
+## Other notes
+
+* The **index** column on each table is the primary key for that table, there is no relationship between these keys in the schema (don't join on them).  This is just an artifact of dumping a pandas dataframe to SQLite.
 
 ## SQLite Schema
 
@@ -203,6 +207,23 @@ CREATE TABLE IF NOT EXISTS "zone_definitions" (
   "centroid" TEXT
 );
 ```
+
+### Zone Index to Incident / Call for Service (relationship table)
+
+* **Description:**  To map an incident from either the *fire_incidents* or *calls_for_service* table to the zones references in the *zone_definitions* table, use this as a join table.
+* **Relationships** *fire_incidents* / *calls_for_service* and *zone_definitions*
+* **Note:** This only includes mapping for incidents which occured in year 2019.  This is the same year and data used for the FCA algorithm.
+
+```
+CREATE TABLE IF NOT EXISTS "zone_idx_to_incident" (
+"index" INTEGER,
+  "call_number" INTEGER,
+  "incident_number" INTEGER,
+  "zone_idx" INTEGER
+);
+```
+
+
 ### Zone Distance
 
 * **Description:**  From the BingMaps API, the travel distance and travel times with and without traffic between the centroid of each zone described in the *zone_defintions* table.
@@ -222,13 +243,23 @@ CREATE TABLE IF NOT EXISTS "zone_distance" (
 
 ### Floating Catchment Outputs
 
-* **Description:**  The accessibility score outputs (from the algorithm). 
+* **Description:**  The accessibility score outputs (from the algorithm). This is split into **two tables**.  
 * **Relationships:** The *zone_definitions* and *floating_catchment_output*.  The "zone_from" and "zone_to" relate to the  zone_idx fields in these tables.
 * **Note:** The accessibility_score shows how well covered the area.  Higher scores mean there is better coverage (lower response times).  The *scenario_name* field will be used to simulate placements of different fire_stations.  The only value currently is "baseline", which is the accessibility before adding any new stations.  In the future, this will hold new scenario sets (accessibility scores for the entire map) that reflect placement of a new simulated fire station in a zone, e.g. "simulation_193" will be the set of accessibility scores when a new fire station is placed in zone 193.
 
+#### Baseline table (no simulation), one row for each zone (n)
 ```
 CREATE TABLE IF NOT EXISTS "floating_catchment_output" (
 "index" INTEGER,
+  "zone_idx" INTEGER,
+  "accessibility_score" REAL,
+  "scenario_name" TEXT
+);
+```
+#### Simulation table (n^2) rows
+```
+CREATE TABLE IF NOT EXISTS "floating_catchment_output" (
+  "index" INTEGER,
   "zone_idx" INTEGER,
   "accessibility_score" REAL,
   "scenario_name" TEXT

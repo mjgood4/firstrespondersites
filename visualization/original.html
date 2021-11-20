@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+
+    <!-- add title -->
+    <title>San Francisco Response Times</title>
+
+    <!-- import required libraries here -->
+    <script type="text/javascript" src="lib/d3.v5.min.js"></script>
+    <script type="text/javascript" src="lib/d3-dsv.min.js"></script>
+    <script type="text/javascript" src="lib/d3-geo-projection.v2.min.js"></script>
+    <script type="text/javascript" src="lib/topojson.v2.min.js"></script>
+    <script type="text/javascript" src="lib/d3-tip.min.js"></script>
+    <script type="text/javascript" src="lib/d3-legend.min.js"></script>
+
+    <style>
+        /* define CSS rules here */
+    </style>
+
+    <title></title>
+</head>
+
+
+<body>
+    <!-- Add heading for the visualization -->
+    <h1>San Francisco Response Times Visualization</h1>
+
+    <!-- Create dropdown element here. Options should be added after reading in game file, they should not be created here.-->
+    <select id="gameDropdown"></select>
+
+    <!-- append visualization svg to this div-->
+    <div id="choropleth"></div>
+
+    <script>
+
+        // enter code to define margin and dimensions for svg
+        var plotMargin = { top: 100, right: 100, bottom: 100, left: 100 },
+            plotWidth = 1100,
+            plotHeight = 750;
+
+        // enter code to create svg
+        var mapSvg = d3.select("#choropleth")
+            .append("svg")
+            .attr("width", plotWidth + plotMargin.left + plotMargin.right)
+            .attr("height", plotHeight + plotMargin.top + plotMargin.bottom)
+
+        var legend = mapSvg.append("g")
+            .attr('id', 'legend')
+            .attr("transform", "translate(950, 5)")
+        // enter code to create color scale
+
+        var userName = mapSvg.append("g")
+            .attr('transform', "translate(10, 550)")
+            .append("text")
+            .text("manderson334")
+
+        // enter code to define tooltip
+
+        // enter code to define projection and path required for Choropleth
+        // For grading, set the name of functions for projection and path as "projection" and "path"
+        var projection = d3.geoNaturalEarth()
+            .scale(200)
+        //.translate([plotWidth-360 , 2*plotHeight ]) 
+
+        var path = d3.geoPath()
+            .projection(projection);
+
+        // define any other global variables 
+        Promise.all([
+            d3.dsv(",", "ratings-by-country.csv"),
+            d3.json("world_countries.json")
+        ]).then(function (data) {
+
+            var countryRatings = data[0];
+            var countryMap = data[1];
+
+            // enter code to call ready() with required arguments
+            var groupedData = d3.nest()
+                .key(function (d) {
+                    return d.Game;
+                })
+                .key(function (d) {
+                    return d.Country;
+                })
+                .entries(countryRatings);
+
+            var sortedKeys = groupedData.map(function (k) {
+                return k.key;
+            }).sort();
+
+            var dropDown = d3.select("#gameDropdown")
+
+            dropDown.selectAll("option")
+                .data(sortedKeys)
+                .enter().append("option")
+                .text(function (d) { return d; })
+                .attr("value", function (d) { return d; })
+
+            dropDown.on("change", function (e) {
+                plotMap(groupedData, countryMap);
+            })
+
+            plotMap(groupedData, countryMap);
+        });
+
+        var colorArray = ['#feedde', '#fdbe85', '#fd8d3c', '#d94701'];
+        var missingColor = "gray";
+
+        function plotMap(groupedData, mapData) {
+
+            var selectedOption = d3.select("#gameDropdown").node().value;
+            var gameData = groupedData.filter(function (x) {
+                return x.key == "" + selectedOption;
+            })
+            var avgRating = gameData[0].values.map(function (x) {
+                return Number.parseFloat(x.values[0]["Average Rating"]);
+            });
+
+            avgRating.sort(function (a, b) { return a - b; });
+
+            var quantiles = [
+                d3.quantile(avgRating, 0),
+                d3.quantile(avgRating, 0.25),
+                d3.quantile(avgRating, 0.5),
+                d3.quantile(avgRating, 0.75),
+                d3.quantile(avgRating, 1.0)
+            ];
+
+            var colorScale = d3.scaleQuantile()
+                .domain(quantiles)
+                .range([0, 1, 2, 3]);
+
+            mapSvg.append("g")
+                .attr('id', 'countries')
+                .selectAll("path")
+                .data(mapData.features)
+                .enter().append("path")
+                .attr("d", path)
+                .attr("fill", function (d) {
+                    var countryName = d.properties.name;
+                    var countryData = gameData[0].values.filter(function (x) {
+                        return countryName == x.key;
+                    });
+                    if (countryData.length == 0) {
+                        return missingColor;
+                    } else {
+                        var rating = Number.parseFloat(countryData[0].values[0]["Average Rating"]);
+                        var quantile = colorScale(rating);
+                        return colorArray[quantile];
+                    }
+                });
+
+            var legendQuantiles = []
+            for (var i = 0; i < quantiles.length - 1; i++) {
+                var q_l = quantiles[i];
+                var q_h = quantiles[i + 1];
+                legendQuantiles.push({
+                    legendLabel: (Math.round(100*q_l, 2)/100) + " to " + (Math.round(100*q_h)/100),
+                    color: colorArray[i],
+                    offset: i
+                });
+            }
+            
+            legend.node().innerHTML = "";
+
+            legend.selectAll("rect")
+                .data(legendQuantiles)
+                .enter().append("rect")
+                .attr("width", "15")
+                .attr("height", "15")
+                .attr("fill", function (d) {
+                    return d.color;
+                })
+                .attr("transform", function (d) {
+                    return "translate(0," + d.offset * 25 + ")";
+                })
+
+            legend.selectAll("text")
+                .data(legendQuantiles)
+                .enter().append("text")
+                .attr("transform", function (d) {
+                    return "translate(20," + (d.offset * 25 + 12) + ")";
+                })
+                .text(function(d) {
+                    return d.legendLabel;
+                })
+        }
+
+
+    </script>
+
+
+
+</body></html>

@@ -17,7 +17,7 @@
 > conda install pandas seaborn geopandas matplotlib scikit-learn sqlite xgboost pygeos
 ```
 2. Clone the repository
-3. Download the [SQLite database](https://gtvault-my.sharepoint.com/:u:/g/personal/manderson334_gatech_edu/EUCVCElcpSFLswnJB7sPHowB0fpm7eIoBumUq0avyfNFIw?e=lFwjYc) that we've compiled for this project **into the "/data" subdirectory** of the cloned repository.
+3. Download the [SQLite database](https://gtvault-my.sharepoint.com/:u:/g/personal/manderson334_gatech_edu/EUCVCElcpSFLswnJB7sPHowB0fpm7eIoBumUq0avyfNFIw?e=lFwjYc) that we've compiled for this project **into the "/data" subdirectory** of the cloned repository.  You need to **unzip** this file.
 4. If you plan on using Jupyter (rather than vscode or some other IPython environment) to run the notebook, install it into the ``geo`` conda environment
 ```
 > conda activate geo

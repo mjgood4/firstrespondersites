@@ -8,7 +8,7 @@
 
 **The recommended setup uses MacOS / Linux operating systems, Windows has not been tested**
 
-1. If you are on Linux, setup the conda environment using the conda_env.yml and Python version 3.8.11.  Otherwise, use the following setup proceedure for anaconda.
+1. If you are on Linux, the provided conda environment may work for you.  Otherwise, use the following setup proceedure for anaconda.
 ```
 > conda create -n geo python=3.7.2
 > conda activate geo

@@ -10,9 +10,10 @@
 
 1. If you are on Linux, setup the conda environment using the conda_env.yml and Python version 3.8.11.  Otherwise, use the following setup proceedure for anaconda.
 ```
-> conda create -n geo python=3.8.11
+> conda create -n geo python=3.7.2
 > conda activate geo
 > conda config --env --add channels conda-forge
+> conda config --set channel_priority strict
 > conda install pandas seaborn geopandas matplotlib scikit-learn sqlite xgboost pygeos
 ```
 2. Clone the repository

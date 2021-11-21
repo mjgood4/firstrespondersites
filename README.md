@@ -8,9 +8,15 @@
 
 **The recommended setup uses MacOS / Linux operating systems, Windows has not been tested**
 
-1. Setup the conda environment using the conda_env.yml and Python version 3.8.11.  
-2. Clone the repository
-3. Download the [SQLite database](https://gtvault-my.sharepoint.com/:u:/g/personal/manderson334_gatech_edu/EUCVCElcpSFLswnJB7sPHowB0fpm7eIoBumUq0avyfNFIw?e=lFwjYc) that we've compiled for this project **into the "/data" subdirectory** of the cloned repository.
+1. If you are on Linux, setup the conda environment using the conda_env.yml and Python version 3.8.11.  Otherwise, use the following setup proceedure for anaconda.
+```
+> conda create -n geo python=3.8.11
+> conda activate geo
+> conda config --env --add channels conda-forge
+> conda install pandas seaborn geopandas matplotlib sklearn sqlite3 xgboost
+```
+3. Clone the repository
+4. Download the [SQLite database](https://gtvault-my.sharepoint.com/:u:/g/personal/manderson334_gatech_edu/EUCVCElcpSFLswnJB7sPHowB0fpm7eIoBumUq0avyfNFIw?e=lFwjYc) that we've compiled for this project **into the "/data" subdirectory** of the cloned repository.
 
 ## Repository Overview
 

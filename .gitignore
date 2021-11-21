@@ -1,2 +1,16 @@
+<<<<<<< HEAD
 .vscode/
 
+=======
+
+jyEDA/raw_data/fire_incidents.csv 
+jyEDA/clean/fire_incidents-csv.csv
+Incident Analysis.pbix
+Map Animation.mp4
+Map Animation.pptx
+Fire Incidents.pbix
+jyEDA/clean/truckEngineServiceCalls.csv
+jyEDA/clean/truckEngineServiceCalls.zip
+~$Exploratory Data Analysis.pptx
+jyEDA/predictions.zip
+>>>>>>> 2c576badfb716b49ae28bb0c8764e611eb94f2c6

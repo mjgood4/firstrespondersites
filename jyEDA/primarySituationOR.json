@@ -1,0 +1,353 @@
+[
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "0",
+    "newColumnName": "Name",
+    "description": "Rename column 0 to Name"
+  },
+  {
+    "op": "core/column-split",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "Name",
+    "guessCellType": true,
+    "removeOriginalColumn": false,
+    "mode": "separator",
+    "separator": " ",
+    "regex": false,
+    "maxColumns": 0,
+    "description": "Split column Name by separator"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Name 2",
+    "description": "Remove column Name 2"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Name 3",
+    "description": "Remove column Name 3"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Name 4",
+    "description": "Remove column Name 4"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Name 5",
+    "description": "Remove column Name 5"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Name 6",
+    "description": "Remove column Name 6"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Name 7",
+    "description": "Remove column Name 7"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Name 8",
+    "description": "Remove column Name 8"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Name 9",
+    "description": "Remove column Name 9"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Name 10",
+    "description": "Remove column Name 10"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Name 11",
+    "description": "Remove column Name 11"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Name 1",
+    "newColumnName": "Code",
+    "description": "Rename column Name 1 to Code"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Column",
+    "description": "Remove column Column"
+  },
+  {
+    "op": "core/mass-edit",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "Name",
+    "expression": "value",
+    "edits": [
+      {
+        "from": [
+          "671 HazMat release investigation w/no HazMat",
+          "671 Hazmat release investigation w/no hazmat"
+        ],
+        "fromBlank": false,
+        "fromError": false,
+        "to": "671 HazMat release investigation w/no HazMat"
+      }
+    ],
+    "description": "Mass edit cells in column Name"
+  },
+  {
+    "op": "core/mass-edit",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "Name",
+    "expression": "value",
+    "edits": [
+      {
+        "from": [
+          "354 Trench/below grade rescue",
+          "354 Trench/below-grade rescue"
+        ],
+        "fromBlank": false,
+        "fromError": false,
+        "to": "354 Trench/below grade rescue"
+      },
+      {
+        "from": [
+          "712 Direct tie to FD, malicious false alarm",
+          "712 Direct tie to FD, malicious/false alarm"
+        ],
+        "fromBlank": false,
+        "fromError": false,
+        "to": "712 Direct tie to FD, malicious false alarm"
+      },
+      {
+        "from": [
+          "356 High angle rescue",
+          "356 High-angle rescue"
+        ],
+        "fromBlank": false,
+        "fromError": false,
+        "to": "356 High angle rescue"
+      },
+      {
+        "from": [
+          "360 Water & ice related rescue, other",
+          "360 Water & ice-related rescue, other"
+        ],
+        "fromBlank": false,
+        "fromError": false,
+        "to": "360 Water & ice related rescue, other"
+      },
+      {
+        "from": [
+          "672 Biological hazard investigation, none found",
+          "672 Biological hazard investigation,none found"
+        ],
+        "fromBlank": false,
+        "fromError": false,
+        "to": "672 Biological hazard investigation, none found"
+      }
+    ],
+    "description": "Mass edit cells in column Name"
+  },
+  {
+    "op": "core/mass-edit",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "Name",
+    "expression": "value",
+    "edits": [
+      {
+        "from": [
+          "163 Outside gas or vapor combustion explosion",
+          "163 Outside gas/vapor combustion explosion"
+        ],
+        "fromBlank": false,
+        "fromError": false,
+        "to": "163 Outside gas or vapor combustion explosion"
+      },
+      {
+        "from": [
+          "231 Chem. reaction rupture of process vessel",
+          "231 Chemical reaction rupture of process vessel"
+        ],
+        "fromBlank": false,
+        "fromError": false,
+        "to": "231 Chem. reaction rupture of process vessel"
+      },
+      {
+        "from": [
+          "422 Chemical spill or leak",
+          "422 Chemical spill or leak(haz.)"
+        ],
+        "fromBlank": false,
+        "fromError": false,
+        "to": "422 Chemical spill or leak(haz.)"
+      },
+      {
+        "from": [
+          "641 Vicinity alarm (incid. another location)",
+          "641 Vicinity alarm (incident in other location)"
+        ],
+        "fromBlank": false,
+        "fromError": false,
+        "to": "641 Vicinity alarm (incident in other location)"
+      },
+      {
+        "from": [
+          "123 Fire in portable bldg., fixed location",
+          "123 Fire in portable building, fixed location"
+        ],
+        "fromBlank": false,
+        "fromError": false,
+        "to": "123 Fire in portable building, fixed location"
+      }
+    ],
+    "description": "Mass edit cells in column Name"
+  },
+  {
+    "op": "core/mass-edit",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "Name",
+    "expression": "value",
+    "edits": [
+      {
+        "from": [
+          "223 Air or gas rupture of pressure or process vessel",
+          "223 Air/gas rupture of pressure or process"
+        ],
+        "fromBlank": false,
+        "fromError": false,
+        "to": "223 Air or gas rupture of pressure or process vessel"
+      },
+      {
+        "from": [
+          "733 Smoke detector activation due to malfunction",
+          "733 Smoke detector activation/malfunction"
+        ],
+        "fromBlank": false,
+        "fromError": false,
+        "to": "733 Smoke detector activation due to malfunction"
+      },
+      {
+        "from": [
+          "353 Removal of victim(s) from stalled elev.",
+          "353 Removal of victim(s) from stalled elevator"
+        ],
+        "fromBlank": false,
+        "fromError": false,
+        "to": "353 Removal of victim(s) from stalled elevator"
+      },
+      {
+        "from": [
+          "650 Steam, other gas mistaken for smoke, other",
+          "650 Steam/gas mistaken for smoke, other"
+        ],
+        "fromBlank": false,
+        "fromError": false,
+        "to": "650 Steam, other gas mistaken for smoke, other"
+      },
+      {
+        "from": [
+          "114 Chimney or flue fire, confined to chimney or flue",
+          "114 Chimney/flue fire, confined to chimney"
+        ],
+        "fromBlank": false,
+        "fromError": false,
+        "to": "114 Chimney or flue fire, confined to chimney or flue"
+      },
+      {
+        "from": [
+          "420 Toxic condition, other",
+          "420 Toxic condition, other (haz.)"
+        ],
+        "fromBlank": false,
+        "fromError": false,
+        "to": "420 Toxic condition, other (haz.)"
+      },
+      {
+        "from": [
+          "200 Overpressure rupture, explosion, overheat other",
+          "200 Overpressure rupture/explosion, overheat"
+        ],
+        "fromBlank": false,
+        "fromError": false,
+        "to": "200 Overpressure rupture, explosion, overheat other"
+      },
+      {
+        "from": [
+          "661 EMS call, party transported by non-fire ag",
+          "661 EMS call, party transported by non-fire agency"
+        ],
+        "fromBlank": false,
+        "fromError": false,
+        "to": "661 EMS call, party transported by non-fire agency"
+      }
+    ],
+    "description": "Mass edit cells in column Name"
+  },
+  {
+    "op": "core/mass-edit",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "Name",
+    "expression": "value",
+    "edits": [
+      {
+        "from": [
+          "142 Brush or brush-and-grass mixture fire",
+          "142 Brush, or brush and grass mixture fire"
+        ],
+        "fromBlank": false,
+        "fromError": false,
+        "to": "142 Brush or brush-and-grass mixture fire"
+      }
+    ],
+    "description": "Mass edit cells in column Name"
+  },
+  {
+    "op": "core/row-flag",
+    "engineConfig": {
+      "facets": [
+        {
+          "type": "list",
+          "name": "Name",
+          "expression": "value",
+          "columnName": "Name",
+          "invert": false,
+          "omitBlank": false,
+          "omitError": false,
+          "selection": [
+            {
+              "v": {
+                "v": "114 Chimney or flue fire, confined to chimney or flue",
+                "l": "114 Chimney or flue fire, confined to chimney or flue"
+              }
+            }
+          ],
+          "selectBlank": false,
+          "selectError": false
+        }
+      ],
+      "mode": "row-based"
+    },
+    "flagged": true,
+    "description": "Flag rows"
+  }
+]

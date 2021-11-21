@@ -13,7 +13,7 @@
 > conda create -n geo python=3.8.11
 > conda activate geo
 > conda config --env --add channels conda-forge
-> conda install pandas seaborn geopandas matplotlib sklearn sqlite3 xgboost
+> conda install pandas seaborn geopandas matplotlib scikit-learn sqlite xgboost
 ```
 2. Clone the repository
 3. Download the [SQLite database](https://gtvault-my.sharepoint.com/:u:/g/personal/manderson334_gatech_edu/EUCVCElcpSFLswnJB7sPHowB0fpm7eIoBumUq0avyfNFIw?e=lFwjYc) that we've compiled for this project **into the "/data" subdirectory** of the cloned repository.

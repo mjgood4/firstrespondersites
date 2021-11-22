@@ -9,3 +9,6 @@ jyEDA/clean/truckEngineServiceCalls.csv
 jyEDA/clean/truckEngineServiceCalls.zip
 ~$Exploratory Data Analysis.pptx
 jyEDA/predictions.zip
+jyEDA/aggregated_facilityId.csv
+.gitignore
+jyEDA/predictions_facilityId.csv

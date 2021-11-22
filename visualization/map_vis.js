@@ -25,7 +25,8 @@ Promise.all([
     d3.dsv(",", "data/travel_time.csv"),
     d3.dsv(",", "data/simulation_fca_output.csv"),
     d3.dsv(",", "data/baseline_response_time.csv"),
-    d3.dsv(",", "data/simulation_response_time.csv")
+    d3.dsv(",", "data/simulation_response_time.csv"),
+    d3.dsv(",", "data/demand.csv")
 ]).then(function (data) {
 
     const sfMapData = data[0];
@@ -36,6 +37,7 @@ Promise.all([
     const simulationFcaOutput = preprocessSimulationData(data[5]);
     const baselineResponseTime = data[6];
     const simulationResponseTime = preprocessSimulationData(data[7]);
+    const demandData = data[8];
 
     // draws the base map
     const mapCtx = setupMap(sfMapData);
@@ -54,6 +56,7 @@ Promise.all([
             simulationFcaOutput: simulationFcaOutput,
             baselineResponseTime: baselineResponseTime,
             simulationResponseTime: simulationResponseTime,
+            demandData: demandData
         });
     }
 
@@ -68,10 +71,11 @@ Promise.all([
 
     d3.select("#dropdown").on("change", function () {
         visType = this.value;
-        if (visType !== 'sim') {
-            d3.select("#simulation_controls").style("display", "none");
-        } else {
+        if (visType === 'sim') {
             d3.select("#simulation_controls").style("display", "");
+            drawMap();
+        } else {
+            d3.select("#simulation_controls").style("display", "none");
             drawMap();
         }
     });
@@ -95,13 +99,19 @@ function refreshData(mapCtx, data) {
     const facilities = drawFacilities(mapCtx, data.sfFacilityData);
 
     let gridValues = data.baselineFcaOutput;
-    if (simType === 'rt') {
+    if (visType === 'sim' && simType === 'rt') {
         gridValues = data.baselineResponseTime;
+    } else if (visType === 'demand') {
+        gridValues = data.demandData;
     }
     const gridDrawer = setupGridDrawer(mapCtx, data.mapGridData, gridValues);
     const mapGridCells = gridDrawer(gridValues);
 
-    setupEventHandlers(mapCtx, data, mapGridCells, gridDrawer);
+    if (visType === 'sim') {
+        setupEventHandlers(mapCtx, data, mapGridCells, gridDrawer);
+    }
+
+
 }
 
 function setupMap(geoObj) {
@@ -147,9 +157,15 @@ function setupGridDrawer(mapCtx, gridDefinition, initialGridValues) {
     const valMax = d3.max(initialGridValues, x => Number.parseFloat(x.value));
     const valMid = d3.mean(initialGridValues, x => Number.parseFloat(x.value));
 
+    // reverse color scale for demand
+    let range = ["red", "yellow", "green"]
+    if (visType === 'demand') {
+        range = ["green", "yellow", "red"]
+    }
+
     const colorScale = d3.scaleLinear()
         .domain([valMin, valMid, valMax])
-        .range(["red", "yellow", "green"]);
+        .range(range);
 
     // closure scoped
     var isFirstDraw = true;

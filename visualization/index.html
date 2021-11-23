@@ -105,12 +105,32 @@
             <div id="controls_spatial_accessibility" style="padding: 20px 10px;">
               <div id="visualization_help" style="font-size: 14pt; max-width: 600px;">
                 <i class="fa-solid fa-circle-question" style="color: blue; font-size: 20px;"></i>
-                <span style="color: blue;">How to use this visualization:</span>
+                <span style="color: blue;">How to use this visualization 
+                  <span class="simple_tooltip">
+                    (more info) 
+                    <span class="tooltiptext" style="width:600px; padding: 10px;">
+                      <p>Red areas of the map have low spatial accessibility.  Practically, this means that the number of fire units
+                      available to respond per-incident is low.  When there are simultaneous fire incidents, these areas may require units
+                      from much farther away to respond, delaying a potentially life-saving response. Naively, <b>optimal placement</b> of a new fire station 
+                      would minimize the amount of red on the map (i.e. more even spatial accessibility).  However, this must also be combined
+                      with domain-expertise about current challenges facing the fire department.</p>
+                      <p>In placing a new station, one large consideration is the area that it can cover in less than 5 minutes.
+                         85% of 2019 fire responses had a unit on scene in less than 5 minutes.  When hovering over the map to place a new simulated station, 
+                         the estimated area that can be covered in less than 5 minutes is shown.  Note that proximity to highways, local traffic density,  
+                         street conditions (e.g. single lane streets), and terrain (e.g. hills etc) will greatly impact the size of this area.
+                      </p>
+                      <p>
+                        For existing fire stations, hovering over the map shows the number of fire stations within 5 minutes in <i>Data for location</i> at
+                         the top of the map (as estimated from 2019 data via the KDE).
+                      </p>
+                    </span>
+                  </span>:
+                </span>
                 <ul>
                   <li>This visualization allows you to <b>simulate</b> the placement of a new fire station in San
                     Francisco. <small>The visualization uses the results of the Kernel Density Estimation and the
                       Two-Step Floating Catchment Area (2SFCA) algorithm.</small></li>
-                  <li><b>Hover</b> over the map to see the estimated area the fire station could respond to in under 5
+                  <li><b>Hover</b> over the map to see the estimated area the new fire station could respond to in under 5
                     minutes, if a new station is placed in that area.
                     <br><small>The estimated area shown is sourced from the BingMaps API. Note that proximity to
                       interstates and highways will greatly affect the size and shape of this area.</small>
@@ -157,8 +177,9 @@
                   <span class="tooltiptext">
                     Number of fire stations that can respond with a truck or engine within 5 minutes.
                     This is provided by kernel density estimates for each fire station to understand the geographic
-                    region
-                    each can respond to in under 5 minutes (with high probability).
+                    region each can respond to in under 5 minutes (with high probability).
+                    This is <b>not updated to include the simulation value</b>, but if the grid square is affected by the simulation
+                    (and has a +00% icon), you can add 1 to see the effect.
                   </span>
                 </small>:
                 <span id="num_fire_stations" class="val">-</span>
@@ -302,7 +323,7 @@
         .attr("x", "50")
         .attr("y", "35")
         .attr("style", "font-size: 14pt;")
-        .text("Existing fire station")
+        .text("Existing fire station")      
 
       const simSymbol = svgLegend
         .append("circle")
@@ -340,7 +361,7 @@
         .attr("style", "font-size: 12pt;")
         .text("(<= 5 minute travel time)")
 
-      const spatialYOffset = 130;
+      const spatialYOffset = 120;
 
       const spatialLabel = svgLegend
         .append("text")
@@ -377,7 +398,7 @@
         .attr("x", "70")
         .attr("y", (spatialYOffset + 65) + "")
         .attr("style", "font-size: 12pt;")
-        .text("Avg # of available fire units per incident")
+        .text("Average # of available fire units per incident")
 
       const colorLegendLow = svgLegend
         .append("rect")
@@ -393,6 +414,27 @@
         .attr("y", (spatialYOffset + 100) + "")
         .attr("style", "font-size: 12pt;")
         .text("Low # of available fire units per incident")
+
+      const chgSymbol = svgLegend
+        .append("text")
+        .attr("x", "30")
+        .attr("y", (spatialYOffset + 140) + "")
+        .attr("style", "font-size: 10pt;")
+        .text("+00%")
+
+      const chgLabelLine1 = svgLegend
+        .append("text")
+        .attr("x", "70")
+        .attr("y", (spatialYOffset + 140) + "")
+        .attr("style", "font-size: 12pt;")
+        .text("Change in spatial accessibilty")
+      
+      const chgLabelLine2 = svgLegend
+        .append("text")
+        .attr("x", "70")
+        .attr("y", (spatialYOffset + 160) + "")
+        .attr("style", "font-size: 12pt;")
+        .text("(due to placement of new fire station at indicated location)")
     }
 
     function preprocessSimulationData(simulationData) {
@@ -547,16 +589,22 @@
       var isFirstDraw = true;
       var mapGridCells = null;
 
+      const initialValLookup = {};
+      initialGridValues.forEach(x => {
+        initialValLookup[x.zone_idx] = x.accessibility_score;
+      });
+
       function gridDrawer(redrawGridValues) {
 
+        let valLookup = null;
         if (!redrawGridValues) {
-          redrawGridValues = initialGridValues
+          valLookup = initialValLookup;        
+        } else {
+          valLookup = {};
+          redrawGridValues.forEach(x => {
+            valLookup[x.zone_idx] = x.accessibility_score;
+          })        
         }
-
-        const valLookup = {}
-        redrawGridValues.forEach(x => {
-          valLookup[x.zone_idx] = x.accessibility_score;
-        })
 
         if (isFirstDraw) {
           mapGridCells = mapGrid.selectAll("path")
@@ -580,12 +628,34 @@
             });
           isFirstDraw = false;
         } else {
+          d3.selectAll(".zone_increase_label").remove();
           for (let zoneIdx in valLookup) {
             let currVal = valLookup[zoneIdx];
+            let initialVal = initialValLookup[zoneIdx];
+            let change = currVal / initialVal;
+
             currVal = (currVal > valMax) ? valMax : currVal;
             currVal = (currVal < valMin) ? valMin : currVal;
-            d3.select("#zone_idx_" + zoneIdx)
-              .attr("fill", colorScale(currVal));
+            
+            let zoneSquare = d3.select("#zone_idx_" + zoneIdx);
+            zoneSquare.attr("fill", colorScale(currVal));            
+                                    
+            if (currVal != initialVal & initialVal > 0) {
+
+              let zonePath = zoneSquare.attr("d").replace(/^M/,"").split(",")            
+              let zoneCoords = {
+                "x": Number.parseFloat(zonePath[0]),
+                "y": Number.parseFloat(zonePath[1].replace(/[A-Za-z].*$/, ""))
+              }            
+
+              const pctLabel = "+" + ((100.0*(currVal / initialVal)).toFixed(0) - 100.0) + "%";
+                mapGrid.append("text")
+                .attr("x", zoneCoords.x + 10)
+                .attr("y", zoneCoords.y + 25)
+                .attr("class", "zone_increase_label")
+                .text(pctLabel)
+            }
+            
           }
         }
 
@@ -673,6 +743,7 @@
           .attr("cx", clickCoords.x)
           .attr("cy", clickCoords.y)
           .attr("fill", "purple")
+          .attr("fill-opacity", "0.8")
           .attr("r", 10)
 
         // create a new tooltip processor for our scenario
@@ -681,8 +752,9 @@
         const tooltipData = currentTooltipProcessor(zoneIdx) || false;
         const simulationTooltipData = (simulationTooltipProcessor != null)? 
           (simulationTooltipProcessor(zoneIdx) || false)
-          : false;      
-        updateSimTooltips(tooltipData, simulationTooltipData);
+          : false;
+      
+        updateSimTooltips(tooltipData, simulationTooltipData);        
 
       }).on("mouseover", (x) => {
 

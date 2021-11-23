@@ -19,6 +19,7 @@ const facilities = svg.append("g").attr("id", "facilities");
 const mapGrid = svg.append("g").attr("id", "map_grid");
 const mapLegend = svg.append("g").attr("id", "map_legend");
 const simulationFacility = svg.append("g").attr("id", "simulation_facility");
+const catchmentArea = svg.append("g").attr("id", "catchment_area");
 
 let visType = "sim";
 let simType = 'sa';
@@ -34,7 +35,8 @@ Promise.all([
     d3.dsv(",", "data/baseline_response_time.csv"),
     d3.dsv(",", "data/simulation_response_time.csv"),
     d3.dsv(",", "data/demand.csv"),
-    d3.dsv(",", "data/supply_data.csv")
+    d3.dsv(",", "data/supply_data.csv"),
+    d3.json("data/catchment_areas.geojson")
 ]).then(function (data) {
 
     const sfMapData = data[0];
@@ -47,6 +49,7 @@ Promise.all([
     const simulationResponseTime = preprocessSimulationData(data[7]);
     const demandData = data[8];
     const supplyData = data[9];
+    const catchmentData = data[10];
 
     // draws the base map
     const mapCtx = setupMap(sfMapData);
@@ -68,7 +71,8 @@ Promise.all([
             baselineResponseTime: baselineResponseTime,
             simulationResponseTime: simulationResponseTime,
             demandData: demandData,
-            supplyData: supplyData
+            supplyData: supplyData,
+            catchmentData: catchmentData
         });
     }
 
@@ -84,10 +88,10 @@ Promise.all([
     d3.select("#dropdown").on("change", function () {
         visType = this.value;
         if (visType === 'sim') {
-            d3.select("#simulation_controls").style("display", "");
+            d3.selectAll("#simulation_controls, #reset_fca").style("display", "");
             drawMap();
         } else {
-            d3.select("#simulation_controls").style("display", "none");
+            d3.selectAll("#simulation_controls,#reset_fca").style("display", "none");
             drawMap();
         }
     });
@@ -121,12 +125,12 @@ function createTooltipDataProcessor(baselineFcaOutput, simulationFcaOutput, dema
     // process the demand data into a lookup table w/ numeric values
     const demandData = {};
     demandDataRaw.forEach(demandRow => {
-        demandData[demandRow.zone_idx] = Number.parseFloat(demandRow.number_of_calls);
+        demandData[demandRow.zone_idx] = Number.parseFloat(demandRow.value);
     });
 
     const supplyData = {};
     supplyDataRaw.forEach(supplyRow => {
-        supplyData[supplyRow.zone_idx] = Number.parseFloat(supplyRow.num_stations_in_5minute_range);
+        supplyData[supplyRow.zone_idx] = Number.parseFloat(supplyRow.value);
     });
 
     // use partial application to create a tooltip processor for the scenario
@@ -143,7 +147,7 @@ function createTooltipDataProcessor(baselineFcaOutput, simulationFcaOutput, dema
             currentScenarioTooltip[scenarioRow.zone_idx] = {
                 "incidentsPerDay": demandData[scenarioRow.zone_idx] / 365.0,
                 "availableUnits": supplyData[scenarioRow.zone_idx],
-                "accessibilityScore": Number.parseFloat(scenarioRow.accessibility_score)
+                "accessibilityScore": Number.parseFloat(scenarioRow.value)
             }
         });
 
@@ -160,6 +164,8 @@ function refreshData(mapCtx, data) {
         gridValues = data.baselineResponseTime;
     } else if (visType === 'demand') {
         gridValues = data.demandData;
+    } else if (visType === 'supply') {
+        gridValues = data.supplyData;
     }
     const gridDrawer = setupGridDrawer(mapCtx, data.mapGridData, gridValues);
     const mapGridCells = gridDrawer(gridValues);
@@ -169,56 +175,56 @@ function refreshData(mapCtx, data) {
         data.demandData,
         data.supplyData);
 
-    if (visType === 'sim') {
-        setupEventHandlers(mapCtx, data, mapGridCells, gridDrawer, toolTipDataProcessor);
+    setupEventHandlers(mapCtx, data, mapGridCells, gridDrawer, toolTipDataProcessor);
+
+    if (visType === 'supply') {
+        setupCatchmentAreaEventHandlers(mapCtx, facilities, data);
     }
-
-
 }
 
 function setupMap(geoObj) {
 
-    const projection = d3.geoEquirectangular()
+    const projection = d3.geoEquirectangular();
     projection.fitExtent(
         [
             [0, 0],
             [1200, 1000],
         ],
         geoObj
-    )
-    const path = d3.geoPath().projection(projection)
+    );
+    const path = d3.geoPath().projection(projection);
 
-    const scale = baseMap.append("g")
+    const scale = baseMap.append("g");
 
-    const scaleOffsetY = 50
-    const scaleOffsetX = 50
+    const scaleOffsetY = 50;
+    const scaleOffsetX = 50;
 
     scale.append("rect")
         .attr("width", "140")
         .attr("height", "2.5")
         .attr("x", (scaleOffsetX + 0) + "")
         .attr("y", (scaleOffsetY + 15) + "")
-        .attr("fill", "gray")
+        .attr("fill", "gray");
 
     scale.append("rect")
         .attr("width", "2.5")
         .attr("height", "35")
         .attr("x", (scaleOffsetX + 0) + "")
         .attr("y", (scaleOffsetY + 0) + "")
-        .attr("fill", "gray")
+        .attr("fill", "gray");
 
     scale.append("rect")
         .attr("width", "2.5")
         .attr("height", "35")
         .attr("x", (scaleOffsetX + 140) + "")
         .attr("y", (scaleOffsetY + 0) + "")
-        .attr("fill", "gray")
+        .attr("fill", "gray");
 
     scale.append("text")
         .attr("x", (scaleOffsetX + 40) + "")
         .attr("y", (scaleOffsetY + 5) + "")
         .attr("fill", "gray")
-        .text("one mile")
+        .text("one mile");
 
     baseMap.selectAll("path")
         .data(geoObj.features)
@@ -226,7 +232,7 @@ function setupMap(geoObj) {
         .append("path")
         .attr("d", (feature) => path(feature))
         .attr("fill", "white")
-        .attr("stroke", "gray")
+        .attr("stroke", "gray");
 
     return {
         projection: projection,
@@ -243,6 +249,17 @@ function drawFacilities(mapCtx, facilityData) {
         .attr("d", (feature) => mapCtx.path(feature))
         .attr("fill", "red")
         .attr("stroke", "red")
+}
+
+function setupCatchmentAreaEventHandlers(mapCtx, facilities, data) {
+    // TODO: implement
+    // facilities.click((x) => {
+    //
+    // })
+}
+
+function drawCatchmentArea(mapCtx, catchmentData) {
+    // TODO: implement
 }
 
 function setupGridDrawer(mapCtx, gridDefinition, initialGridValues) {
@@ -265,16 +282,22 @@ function setupGridDrawer(mapCtx, gridDefinition, initialGridValues) {
     var isFirstDraw = true;
     var mapGridCells = null;
 
+    const initialValLookup = {};
+    initialGridValues.forEach(x => {
+        initialValLookup[x.zone_idx] = x.value;
+    });
+
     function gridDrawer(redrawGridValues) {
 
+        let valLookup = null;
         if (!redrawGridValues) {
-            redrawGridValues = initialGridValues
+            valLookup = initialValLookup;
+        } else {
+            valLookup = {};
+            redrawGridValues.forEach(x => {
+                valLookup[x.zone_idx] = x.value;
+            })
         }
-
-        const valLookup = {}
-        redrawGridValues.forEach(x => {
-            valLookup[x.zone_idx] = x.value;
-        })
 
         if (isFirstDraw) {
             mapGridCells = mapGrid.selectAll("path")
@@ -297,12 +320,34 @@ function setupGridDrawer(mapCtx, gridDefinition, initialGridValues) {
                 });
             isFirstDraw = false;
         } else {
+            d3.selectAll(".zone_increase_label").remove();
             for (let zoneIdx in valLookup) {
                 let currVal = valLookup[zoneIdx];
+                let initialVal = initialValLookup[zoneIdx];
+                let change = currVal / initialVal;
+
                 currVal = (currVal > valMax) ? valMax : currVal;
                 currVal = (currVal < valMin) ? valMin : currVal;
-                d3.select("#zone_idx_" + zoneIdx)
-                    .attr("fill", colorScale(currVal));
+
+                let zoneSquare = d3.select("#zone_idx_" + zoneIdx);
+                zoneSquare.attr("fill", colorScale(currVal));
+
+                if (currVal != initialVal & initialVal > 0) {
+
+                    let zonePath = zoneSquare.attr("d").replace(/^M/, "").split(",")
+                    let zoneCoords = {
+                        "x": Number.parseFloat(zonePath[0]),
+                        "y": Number.parseFloat(zonePath[1].replace(/[A-Za-z].*$/, ""))
+                    }
+
+                    const pctLabel = "+" + ((100.0 * (currVal / initialVal)).toFixed(0) - 100.0) + "%";
+                    mapGrid.append("text")
+                        .attr("x", zoneCoords.x + 10)
+                        .attr("y", zoneCoords.y + 25)
+                        .attr("class", "zone_increase_label")
+                        .text(pctLabel)
+                }
+
             }
         }
 
@@ -371,7 +416,8 @@ function setupEventHandlers(mapCtx, data, mapGridCells, gridDrawer, toolTipDataP
     });
 
 
-    mapGridCells.on("click", (x) => {
+    if (visType === 'sim') {
+        mapGridCells.on("click", (x) => {
         const zoneIdx = x.properties.zone_idx + "";
         const simulationKey = "new_station_" + zoneIdx;
 
@@ -392,6 +438,7 @@ function setupEventHandlers(mapCtx, data, mapGridCells, gridDrawer, toolTipDataP
             .attr("cx", clickCoords.x)
             .attr("cy", clickCoords.y)
             .attr("fill", "blue")
+            .attr("fill-opacity", "0.8")
             .attr("r", 6)
 
         // create a new tooltip processor for our scenario
@@ -401,25 +448,31 @@ function setupEventHandlers(mapCtx, data, mapGridCells, gridDrawer, toolTipDataP
         const simulationTooltipData = (simulationTooltipProcessor != null) ?
             (simulationTooltipProcessor(zoneIdx) || false)
             : false;
+
         updateSimTooltips(tooltipData, simulationTooltipData);
 
-    }).on("mouseover", (x) => {
+    });
+    }
+
+    mapGridCells.on("mouseover", (x) => {
 
         resetColors();
 
         const zoneIdx = x.properties.zone_idx + "";
         d3.select("#zone_idx_" + zoneIdx).attr("stroke", "black");
 
-        // color the 5 minute travel time cells
-        if (zoneIdx in travelTimeLookup) {
-            const elementsToColor = travelTimeLookup[zoneIdx].map(x => "#zone_idx_" + x);
-            // store the original colors
-            elementsToColor.forEach(x => {
-                originalColors[x] = d3.select(x).attr("fill");
-            })
-            // update to be colored for the response area
-            d3.selectAll(elementsToColor.join(","))
-                .attr("fill", "purple");
+        if (visType === 'sim') {
+            // color the 5 minute travel time cells
+            if (zoneIdx in travelTimeLookup) {
+                const elementsToColor = travelTimeLookup[zoneIdx].map(x => "#zone_idx_" + x);
+                // store the original colors
+                elementsToColor.forEach(x => {
+                    originalColors[x] = d3.select(x).attr("fill");
+                })
+                // update to be colored for the response area
+                d3.selectAll(elementsToColor.join(","))
+                    .attr("fill", "purple");
+            }
         }
 
         // populate the tooltip

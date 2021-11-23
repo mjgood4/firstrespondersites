@@ -1,6 +1,6 @@
 # SF Fire Data - v4
 
-## Click here to download the [sqlite v4 file](https://gtvault-my.sharepoint.com/:u:/g/personal/manderson334_gatech_edu/EUCVCElcpSFLswnJB7sPHowB0fpm7eIoBumUq0avyfNFIw?e=lFwjYc)
+## Click here to download the [sqlite v4 file](https://gtvault-my.sharepoint.com/:u:/g/personal/manderson334_gatech_edu/EUCVCElcpSFLswnJB7sPHowBv1IHVPdfycmvxCFzY2vc9Q?e=UnGzzm)
 
 ## Querying
 

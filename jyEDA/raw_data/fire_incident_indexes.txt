@@ -1,0 +1,64 @@
+Incident Number	0
+Exposure Number	1
+ID	2
+Address	3
+Incident Date	4
+Call Number	5
+Alarm DtTm	6
+Arrival DtTm	7
+Close DtTm	8
+City	9
+zipcode	10
+Battalion	11
+Station Area	12
+Box	13
+Suppression Units	14
+Suppression Personnel	15
+EMS Units	16
+EMS Personnel	17
+Other Units	18
+Other Personnel	19
+First Unit On Scene	20
+Estimated Property Loss	21
+Estimated Contents Loss	22
+Fire Fatalities	23
+Fire Injuries	24
+Civilian Fatalities	25
+Civilian Injuries	26
+Number of Alarms	27
+Primary Situation	28
+Mutual Aid	29
+Action Taken Primary	30
+Action Taken Secondary	31
+Action Taken Other	32
+Detector Alerted Occupants	33
+Property Use	34
+Area of Fire Origin	35
+Ignition Cause	36
+Ignition Factor Primary	37
+Ignition Factor Secondary	38
+Heat Source	39
+Item First Ignited	40
+Human Factors Associated with Ignition	41
+Structure Type	42
+Structure Status	43
+Floor of Fire Origin	44
+Fire Spread	45
+No Flame Spead	46
+Number of floors with minimum damage	47
+Number of floors with significant damage	48
+Number of floors with heavy damage	49
+Number of floors with extreme damage	50
+Detectors Present	51
+Detector Type	52
+Detector Operation	53
+Detector Effectiveness	54
+Detector Failure Reason	55
+Automatic Extinguishing System Present	56
+Automatic Extinguishing Sytem Type	57
+Automatic Extinguishing Sytem Perfomance	58
+Automatic Extinguishing Sytem Failure Reason	59
+Number of Sprinkler Heads Operating	60
+Supervisor District	61
+neighborhood_district	62
+point	63

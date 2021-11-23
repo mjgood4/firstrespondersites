@@ -13,7 +13,7 @@
 > conda create -n geo python=3.7.2
 > conda activate geo
 > conda config --env --add channels conda-forge
-> conda config --set channel_priority strict
+> conda config --set channel_priority strict (ONLY if you encounter setup problems / missing DLLs on windows)
 > conda install pandas seaborn geopandas matplotlib scikit-learn sqlite xgboost pygeos
 ```
 2. Clone the repository

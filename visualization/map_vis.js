@@ -544,9 +544,20 @@ function drawSimulationLegend() {
 
     const spatialYOffset = 130;
     let colorLegendLabel = simType === 'rt' ? "Response Time:" : "Spatial Accessibility (2SFCA):";
+    colorLegendLabel = visType === 'demand' ? "Demand" : colorLegendLabel;
+    colorLegendLabel = visType === 'supply' ? "Supply" : colorLegendLabel;
+
     let colorLegendHighLabel = simType === 'rt' ? "Fast expected response to a new incident" : "High # of available fire units per incident";
+    colorLegendHighLabel = visType === 'demand' ? "Low # of fire incidents" : colorLegendHighLabel;
+    colorLegendHighLabel = visType === 'supply' ? "High # of stations within 5 min" : colorLegendHighLabel;
+
     let colorLegendMedLabel = simType === 'rt' ? "Moderate expected response to a new incident" : "Avg # of available fire units per incident";
+    colorLegendMedLabel = visType === 'demand' ? "Moderate # of fire incidents" : colorLegendMedLabel;
+    colorLegendMedLabel = visType === 'supply' ? "Moderate # of stations within 5 min" : colorLegendMedLabel;
+
     let colorLegendLowLabel = simType === 'rt' ? "Slower expected response to a new incident" : "Low # of available fire units per incident";
+    colorLegendLowLabel = visType === 'demand' ? "High # of fire incidents" : colorLegendLowLabel;
+    colorLegendLowLabel = visType === 'supply' ? "Low # of stations within 5 min" : colorLegendLowLabel;
 
     const spatialLabel = svgLegend
         .append("text")

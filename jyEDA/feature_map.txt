@@ -1,0 +1,5 @@
+0   'station_zone_idx'  q
+1   'day_of_week'   q
+2   'dayflag'   q
+3   'accessibility_score'   q
+4   'zone_accessibility_score'  q

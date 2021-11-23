@@ -12,3 +12,5 @@ jyEDA/predictions.zip
 jyEDA/aggregated_facilityId.csv
 .gitignore
 jyEDA/predictions_facilityId.csv
+jyEDA/predictions_facilityId_only_acc.csv
+jyEDA/predictions_facilityId_station_accessibility.csv

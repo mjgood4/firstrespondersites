@@ -297,6 +297,24 @@ function drawFacilities(mapCtx, facilityData) {
     return circles;
 }
 
+function drawZoneIncrease(currVal, initialVal, zoneSquare) {
+    if (currVal != initialVal & initialVal > 0) {
+
+        let zonePath = zoneSquare.attr("d").replace(/^M/, "").split(",")
+        let zoneCoords = {
+            "x": Number.parseFloat(zonePath[0]),
+            "y": Number.parseFloat(zonePath[1].replace(/[A-Za-z].*$/, ""))
+        }
+
+        const pctLabel = "+" + ((100.0 * (currVal / initialVal)).toFixed(0) - 100.0) + "%";
+        mapGrid.append("text")
+            .attr("x", zoneCoords.x + 10)
+            .attr("y", zoneCoords.y + 25)
+            .attr("class", "zone_increase_label")
+            .text(pctLabel)
+    }
+}
+
 function setupGridDrawer(mapCtx, gridDefinition, initialGridValues) {
 
     const valMin = d3.min(initialGridValues, x => Number.parseFloat(x.value));
@@ -367,21 +385,8 @@ function setupGridDrawer(mapCtx, gridDefinition, initialGridValues) {
                 let zoneSquare = d3.select("#zone_idx_" + zoneIdx);
                 zoneSquare.attr("fill", colorScale(currVal));
 
-                if (currVal != initialVal & initialVal > 0) {
-
-                    let zonePath = zoneSquare.attr("d").replace(/^M/, "").split(",")
-                    let zoneCoords = {
-                        "x": Number.parseFloat(zonePath[0]),
-                        "y": Number.parseFloat(zonePath[1].replace(/[A-Za-z].*$/, ""))
-                    }
-
-                    const pctLabel = "+" + ((100.0 * (currVal / initialVal)).toFixed(0) - 100.0) + "%";
-                    mapGrid.append("text")
-                        .attr("x", zoneCoords.x + 10)
-                        .attr("y", zoneCoords.y + 25)
-                        .attr("class", "zone_increase_label")
-                        .text(pctLabel)
-                }
+                // disabling the zone increases in the map
+                //drawZoneIncrease(currVal, initialVal, zoneSquare);
 
             }
         }

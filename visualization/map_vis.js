@@ -1,17 +1,23 @@
-//const svg = d3.select("#map")
+let margin = {
+    top: 25,
+    bottom: 25,
+    right: 25,
+    left: 25
+}
+let width = window.innerWidth - margin.left - margin.right;
+let height = window.innerHeight - margin.top - margin.bottom;
+
+let visWidth = d3.select("#visualization").node().clientWidth;
+let svgWidth = visWidth - 50;
+let svgHeight = window.innerHeight * .75;
+
 const svg = d3
     .select("#visualization")
     .append("svg")
     .attr("id", "map")
-    .attr("height", "1000")
-    .attr("width", "1200")
-    .attr("style", "background-color: e5f0f9; margin-left: 50px;")
-
-const svgLegend = d3
-    .select("#visualization_legend")
-    .append("svg")
-    .attr("height", "300")
-    .attr("width", "600")
+    .attr("height", svgHeight)
+    .attr("width", svgWidth)
+    .attr("style", "background-color: e5f0f9; margin-left: 25px;")
 
 // create the map layers
 const baseMap = svg.append("g").attr("id", "base_map");
@@ -61,7 +67,7 @@ Promise.all([
         simulationFacility.selectAll("*").remove();
         catchmentArea.selectAll("*").remove();
 
-        drawSimulationLegend();
+        updateLegendLabels();
 
         refreshData(mapCtx, {
             sfFacilityData: sfFacilityData,
@@ -93,8 +99,7 @@ Promise.all([
         } else if (visType === 'supply') {
             d3.selectAll("#simulation_controls").style("display", "none");
             d3.selectAll("#reset_fca").style("display", "");
-        }
-        else {
+        } else {
             d3.selectAll("#simulation_controls,#reset_fca").style("display", "none");
         }
         drawMap();
@@ -180,14 +185,12 @@ function refreshData(mapCtx, data) {
     setupEventHandlers(mapCtx, data, mapGridCells, gridDrawer, toolTipDataProcessor);
     const facilities = drawFacilities(mapCtx, data.sfFacilityData);
 
-    if (visType === 'supply') {
-        drawCatchments(mapCtx, facilities, data);
-        facilities.on("click", (x) => {
-            const key = "catchment_" + x.properties.facility_id;
-            d3.select("#catchment_area").selectAll("path").style("display", "none");
-            d3.select("#" + key).style("display", "");
-        })
-    }
+    drawCatchments(mapCtx, facilities, data);
+    facilities.on("click", (x) => {
+        const key = "catchment_" + x.properties.facility_id;
+        d3.select("#catchment_area").selectAll("path").style("display", "none");
+        d3.select("#" + key).style("display", "");
+    })
 }
 
 function drawCatchments(mapCtx, facilities, data) {
@@ -208,8 +211,8 @@ function setupMap(geoObj) {
     const projection = d3.geoEquirectangular();
     projection.fitExtent(
         [
-            [0, 0],
-            [1200, 1000],
+            [0, 10],
+            [svgWidth, svgHeight - 10],
         ],
         geoObj
     );
@@ -277,21 +280,19 @@ function drawFacilities(mapCtx, facilityData) {
         .attr("fill", "red")
         .attr("stroke", "red");
 
-    if (visType === 'supply') {
-        circles.style("cursor", "pointer");
-        circles.on("mouseover", (x) => {
-            d3.select("#facility_" + x.properties.facility_id)
-                .attr("stroke", "black")
-                .attr("r", "8");
-        });
+    circles.style("cursor", "pointer");
+    circles.on("mouseover", (x) => {
+        d3.select("#facility_" + x.properties.facility_id)
+            .attr("stroke", "black")
+            .attr("r", "8");
+    });
 
-        circles.on("mouseout", (x) => {
-            d3.select("#facility_" + x.properties.facility_id)
-                .attr("stroke", "red")
-                .attr("r", "5")
-                .style("cursor", "pointer");
-        });
-    }
+    circles.on("mouseout", (x) => {
+        d3.select("#facility_" + x.properties.facility_id)
+            .attr("stroke", "red")
+            .attr("r", "5")
+            .style("cursor", "pointer");
+    });
 
     return circles;
 }
@@ -523,82 +524,7 @@ function setupEventHandlers(mapCtx, data, mapGridCells, gridDrawer, toolTipDataP
     });
 }
 
-function drawSimulationLegend() {
-    svgLegend.selectAll("*").remove();
-
-    const fireSymbol = svgLegend
-        .append("circle")
-        .attr("r", "10")
-        .attr("fill", "red")
-        .attr("cx", "30")
-        .attr("cy", "30")
-
-    const fireLabel = svgLegend
-        .append("text")
-        .attr("x", "50")
-        .attr("y", "35")
-        .attr("style", "font-size: 14pt;")
-        .text("Existing fire station")
-
-    const simSymbol = svgLegend
-        .append("circle")
-        .attr("r", "10")
-        .attr("fill", "blue")
-        .attr("cx", "300")
-        .attr("cy", "30")
-
-    const simLabel = svgLegend
-        .append("text")
-        .attr("x", "325")
-        .attr("y", "35")
-        .attr("style", "font-size: 14pt;")
-        .text("New fire station (simulated point)")
-
-    const catchmentAreaSymbol = svgLegend
-        .append("rect")
-        .attr("width", "20")
-        .attr("height", "20")
-        .attr("fill", "lightblue")
-        .attr("x", "20")
-        .attr("y", "60")
-
-    const catchmentAreaLabel = svgLegend
-        .append("text")
-        .attr("x", "50")
-        .attr("y", "70")
-        .attr("style", "font-size: 12pt;")
-        .text("Existing fire station coverage")
-
-    const catchmentAreaLabel2 = svgLegend
-        .append("text")
-        .attr("x", "50")
-        .attr("y", "90")
-        .attr("style", "font-size: 12pt;")
-        .text("(<= 5 minute travel time)")
-
-    const simAreaSymbol = svgLegend
-        .append("rect")
-        .attr("width", "20")
-        .attr("height", "20")
-        .attr("fill", "rgb(196, 141, 221)")
-        .attr("x", "290")
-        .attr("y", "60")
-
-    const simAreaLabel = svgLegend
-        .append("text")
-        .attr("x", "325")
-        .attr("y", "70")
-        .attr("style", "font-size: 14pt;")
-        .text("New fire station coverage area")
-
-    const simAreaLabel2 = svgLegend
-        .append("text")
-        .attr("x", "325")
-        .attr("y", "90")
-        .attr("style", "font-size: 12pt;")
-        .text("(<= 5 minute travel time)")
-
-    const spatialYOffset = 130;
+function updateLegendLabels() {
     let colorLegendLabel = simType === 'rt' ? "Response Time:" : "Spatial Accessibility (2SFCA):";
     colorLegendLabel = visType === 'demand' ? "Demand" : colorLegendLabel;
     colorLegendLabel = visType === 'supply' ? "Supply" : colorLegendLabel;
@@ -615,55 +541,9 @@ function drawSimulationLegend() {
     colorLegendLowLabel = visType === 'demand' ? "High # of fire incidents" : colorLegendLowLabel;
     colorLegendLowLabel = visType === 'supply' ? "Low # of stations within 5 min" : colorLegendLowLabel;
 
-    const spatialLabel = svgLegend
-        .append("text")
-        .attr("x", "20")
-        .attr("y", spatialYOffset + "")
-        .text(colorLegendLabel)
-        .attr("style", "font-size: 14pt; font-weight: bold;")
+    d3.select("#color_scale_type_label").text(colorLegendLabel)
+    d3.select("#color_legend_high_label").text(colorLegendHighLabel)
+    d3.select("#color_legend_med_label").text(colorLegendMedLabel)
+    d3.select("#color_legend_low_label").text(colorLegendLowLabel)
 
-    const colorLegendHigh = svgLegend
-        .append("rect")
-        .attr("width", "20")
-        .attr("height", "20")
-        .attr("x", "40")
-        .attr("y", (spatialYOffset + 15) + "")
-        .attr("fill", "rgb(44,150,0)")
-
-    const highLabel = svgLegend
-        .append("text")
-        .attr("x", "70")
-        .attr("y", (spatialYOffset + 30) + "")
-        .attr("style", "font-size: 12pt;")
-        .text(colorLegendHighLabel)
-
-    const colorLegendMid = svgLegend
-        .append("rect")
-        .attr("width", "20")
-        .attr("height", "20")
-        .attr("x", "40")
-        .attr("y", (spatialYOffset + 50) + "")
-        .attr("fill", "rgb(239,230,100)")
-
-    const midLabel = svgLegend
-        .append("text")
-        .attr("x", "70")
-        .attr("y", (spatialYOffset + 65) + "")
-        .attr("style", "font-size: 12pt;")
-        .text(colorLegendMedLabel)
-
-    const colorLegendLow = svgLegend
-        .append("rect")
-        .attr("width", "20")
-        .attr("height", "20")
-        .attr("x", "40")
-        .attr("y", (spatialYOffset + 85) + "")
-        .attr("fill", "rgb(239,107,100)")
-
-    const lowLabel = svgLegend
-        .append("text")
-        .attr("x", "70")
-        .attr("y", (spatialYOffset + 100) + "")
-        .attr("style", "font-size: 12pt;")
-        .text(colorLegendLowLabel)
 }

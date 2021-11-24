@@ -34,12 +34,12 @@
 
   <style>
     body {
-      margin: 40px;
+      margin: 25px;
       color: black;
     }
 
     #visualization_help li {
-      margin-top: 20px;
+      margin-top: 15px;
     }
 
     small {
@@ -92,86 +92,149 @@
   <h1 style="color: #0e95ef;">San Francisco: Where to build a new fire station?</h1>
 
   <!-- https://gridbyexample.com/examples/example16/ -->
-  <div class="wrapper container-fixed" style="padding-top: 50px;">
-    <table>
-      <tr>
-        <td style="min-width: 500px; vertical-align: top;">
-          <div class="shadow" style="padding: 20px 10px;">
-                    <b style="font-size: 18pt; padding-right: 5px;"><i style="font-size: 20pt;" class="fa-solid fa-sliders-h"></i> Current Visualization:</b>
-                    <select id="dropdown">
-                        <option value="sim">New Fire Station Simulation</option>
-                        <option value="supply">Supply</option>
-                        <option value="demand">Demand</option>
+  <div class="wrapper container-fixed" style="padding-top: 25px;">
+    <div class="row">
+      <div class="col-4">
+        <div id="visualization_help_container" class="row shadow" style="padding: 20px 10px 10px;">
+          <div style="text-align: center; font-size: 16pt;">
+            <b style="padding-right: 5px;"><i class="fa-solid fa-sliders"></i> Current Visualization:</b>
+            <select id="dropdown" style="font-size: 12pt;">
+              <option value="sim">New Fire Station Simulation</option>
+              <option value="supply">Supply</option>
+              <option value="demand">Demand</option>
             </select>
-            <div id="controls_spatial_accessibility" style="padding: 20px 10px;">
-              <div id="visualization_help" style="font-size: 14pt; max-width: 600px;">
-                <i class="fa-solid fa-circle-question" style="color: blue; font-size: 20px;"></i>
-                <span style="color: blue;">How to use this visualization
-                  <span class="simple_tooltip">
-                    (more info)
-                    <span class="tooltiptext" style="width:600px; padding: 10px;">
-                      <p>Red areas of the map have low spatial accessibility.  Practically, this means that the number of fire units
-                      available to respond per-incident is low.  When there are simultaneous fire incidents, these areas may require units
-                      from much farther away to respond, delaying a potentially life-saving response. Naively, <b>optimal placement</b> of a new fire station
-                      would minimize the amount of red on the map (i.e. more even spatial accessibility).  However, this must also be combined
-                      with domain-expertise about current challenges facing the fire department.</p>
-                      <p>In placing a new station, one large consideration is the area that it can cover in less than 5 minutes.
-                         85% of 2019 fire responses had a unit on scene in less than 5 minutes.  When hovering over the map to place a new simulated station,
-                         the estimated area that can be covered in less than 5 minutes is shown.  Note that proximity to highways, local traffic density,
-                         street conditions (e.g. single lane streets), and terrain (e.g. hills etc) will greatly impact the size of this area.
-                      </p>
-                      <p>
-                        For existing fire stations, hovering over the map shows the number of fire stations within 5 minutes in <i>Data for location</i> at
-                         the top of the map (as estimated from 2019 data via the KDE).
-                      </p>
-                    </span>
-                  </span>:
-                </span>
-                <ul>
-                  <li>This visualization allows you to <b>simulate</b> the placement of a new fire station in San
-                    Francisco. <small>The visualization uses the results of the Kernel Density Estimation and the
-                      Two-Step Floating Catchment Area (2SFCA) algorithm.</small></li>
-                  <li><b>Hover</b> over the map to see the estimated area the new fire station could respond to in under 5
-                    minutes, if a new station is placed in that area.
-                    <br><small>The estimated area shown is sourced from the BingMaps API. Note that proximity to
-                      interstates and highways will greatly affect the size and shape of this area.</small>
-                  </li>
-                  <li><b>Click</b> the map to simulate placing a fire station at that location.
-                    <small>The size of the impact (colors) is determined by the 2SFCA algorithm. The data is precomputed
-                      in the Python notebooks created for this project.</small>
-                    <br>
-                  </li>
-                </ul>
-              </div>
-              <div id="simulation_controls">
+          </div>
+          <div id="controls_spatial_accessibility" style="padding: 15px 10px 0px;">
+            <div id="visualization_help" style="font-size: 12pt;">
+              <i class="fa-solid fa-circle-question" style="color: blue; font-size: 18px;"></i>
+              <span style="color: blue;">How to use this visualization
+                <span class="simple_tooltip">
+                  (more info)
+                  <span class="tooltiptext" style="width:600px; padding: 10px;">
+                    <p>Red areas of the map have low spatial accessibility.  Practically, this means that the number of fire units
+                    available to respond per-incident is low.  When there are simultaneous fire incidents, these areas may require units
+                    from much farther away to respond, delaying a potentially life-saving response. Naively, <b>optimal placement</b> of a new fire station
+                    would minimize the amount of red on the map (i.e. more even spatial accessibility).  However, this must also be combined
+                    with domain-expertise about current challenges facing the fire department.</p>
+                    <p>In placing a new station, one large consideration is the area that it can cover in less than 5 minutes.
+                       85% of 2019 fire responses had a unit on scene in less than 5 minutes.  When hovering over the map to place a new simulated station,
+                       the estimated area that can be covered in less than 5 minutes is shown.  Note that proximity to highways, local traffic density,
+                       street conditions (e.g. single lane streets), and terrain (e.g. hills etc) will greatly impact the size of this area.
+                    </p>
+                    <p>
+                      For existing fire stations, hovering over the map shows the number of fire stations within 5 minutes in <i>Data for location</i> at
+                       the top of the map (as estimated from 2019 data via the KDE).
+                    </p>
+                  </span>
+                </span>:
+              </span>
+              <ul style="padding-left: 10px;">
+                <li>This visualization allows you to <b>simulate</b> the placement of a new fire station in San
+                  Francisco. <small>The visualization uses the results of the Kernel Density Estimation and the
+                    Two-Step Floating Catchment Area (2SFCA) algorithm.</small></li>
+                <li><b>Hover</b> over the map to see the estimated area the new fire station could respond to in under 5
+                  minutes, if a new station is placed in that area.
+                  <br><small>The estimated area shown is sourced from the BingMaps API. Note that proximity to
+                    interstates and highways will greatly affect the size and shape of this area.</small>
+                </li>
+                <li><b>Click</b> the map to simulate placing a fire station at that location.
+                  <small>The size of the impact (colors) is determined by the 2SFCA algorithm. The data is precomputed
+                    in the Python notebooks created for this project.</small>
                   <br>
-                  <b>Simulation Type</b>
-                  <form class="border" style="padding: 10px 10px;">
-                      <input type="radio" name="simulation_type" value="sa" checked>
-                      <label>Spatial Accessibility</label>
-                      <br>
-                      <input type="radio" name="simulation_type" value="rt">
-                      <label>Response Time</label>
-                  </form>
+                </li>
+              </ul>
+            </div>
+            <div id="simulation_controls" >
+                <b>Simulation Type</b>
+                <form class="border" style="padding: 10px 10px;">
+                    <input type="radio" name="simulation_type" value="sa" checked>
+                    <label>Spatial Accessibility</label>
+                    <br>
+                    <input type="radio" name="simulation_type" value="rt">
+                    <label>Response Time</label>
+                </form>
+            </div>
+            <button id="reset_fca" style="font-size: 14pt; float: right; margin-top: 10px"><i class="fa-solid fa-undo"
+                style="font-size: 20px;"></i> Reset Visualization</button>
+          </div>
+        </div>
+        <div id="visualization_legend_container" class="row shadow" style="margin-top: 20px; padding: 10px 10px;">
+          <div style="text-align: center; font-size: 16pt;">
+            <b style="padding-right: 5px;"><i style="font-size: 20pt;" class="fa-solid fa-map"></i> Map
+            Legend</b>
+          </div>
+          <div class="container-fluid" id="visualization_legend" style="font-size: 12pt; padding: 10px;">
+            <div class="row" style="padding: 5px;">
+              <div class="col-6" style="padding-right: 0">
+                <svg height="16" width="16">
+                  <circle r="8" fill="red" cx="8" cy="8"></circle>
+                </svg>
+                <text style="padding-left: 5px;">Existing Fire Station</text>
               </div>
-              <br />
-              <button id="reset_fca" style="font-size: 14pt; float: right;"><i class="fa-solid fa-undo"
-                  style="font-size: 20px;"></i> Reset Visualization</button>
+              <div class="col-6" style="padding-right: 0">
+                <svg height="16" width="16">
+                  <circle r="8" fill="blue" cx="8" cy="8"></circle>
+                </svg>
+                <text style="padding-left: 5px;">Simulated Fire Station</text>
+              </div>
+            </div>
+            <div class="row" style="padding: 5px;">
+              <div class="col-6" style="padding-right: 0">
+                <svg height="16" width="16">
+                  <rect height="16" width="16" fill="lightblue"></rect>
+                </svg>
+                <text style="padding-left: 5px;">Existing Fire Station Coverage</text><br>
+                <text style="padding-left: 5px;">(&lt;= 5 minute travel time)</text>
+              </div>
+              <div class="col-6" style="padding-right: 0">
+                <svg height="16" width="16">
+                  <rect height="16" width="16" fill="rgb(196, 141, 221)"></rect>
+                </svg>
+                <text style="padding-left: 5px;">New Fire Station Coverage</text><br>
+                <text style="padding-left: 5px;">(&lt;= 5 minute travel time)</text>
+              </div>
+            </div>
+            <div class="row" style="padding-top: 20px;">
+              <div class="col-12" style="padding-right: 0">
+                <text id="color_scale_type_label" style="font-size: 14pt; font-weight: bold;">Spatial Accessibility (2SFCA):</text>
+              </div>
+            </div>
+            <div class="row" style="padding-top: 10px;">
+              <div class="col-12" style="padding-right: 0">
+                <svg height="16" width="16">
+                  <rect height="16" width="16" fill="rgb(44,150,0)"></rect>
+                </svg>
+                <text id="color_legend_high_label" style="padding-left: 5px;"></text>
+              </div>
+            </div>
+            <div class="row" style="padding-top: 10px;">
+              <div class="col-12" style="padding-right: 0">
+                <svg height="16" width="16">
+                  <rect height="16" width="16" fill="rgb(239,230,100)"></rect>
+                </svg>
+                <text id="color_legend_med_label" style="padding-left: 5px;"></text>
+              </div>
+            </div>
+            <div class="row" style="padding-top: 10px;">
+              <div class="col-12" style="padding-right: 0">
+                <svg height="16" width="16">
+                  <rect height="16" width="16" fill="rgb(239,107,100)"></rect>
+                </svg>
+                <text id="color_legend_low_label" style="padding-left: 5px;"></text>
+              </div>
             </div>
           </div>
-          <div class="shadow" style="margin-top: 20px; padding: 10px 10px;">
-            <b style="font-size: 18pt; padding-right: 5px;"><i style="font-size: 20pt;" class="fa-solid fa-map"></i> Map
-              Legend</b>
-            <div id="visualization_legend"></div>
-          </div>
-        </td>
-        <td>
-          <div id="visualization" class="shadow" style="margin-left: 20px; width: 1300px; padding: 20px 0px;">
-            <div style="padding-left: 50px;">
+        </div>
+      </div>
+      <div class="col-8">
+        <div id="visualization" class="shadow" style="margin-left: 20px; padding: 20px 0px;">
+          <div class="container-fluid">
+            <div class="row">
               <b style="font-size: 12pt; padding-right: 5px;"><i style="font-size: 12pt;"
-                  class="fa-solid fa-mouse-pointer"></i> Data for location</b><small>(based on 2019)</small>
-              <br>
-              <div class="data_value">
+                class="fa-solid fa-mouse-pointer"></i> Data for location</b><small>(based on 2019)</small>
+            </div>
+            <div class="row">
+              <div class="col data_value" style="font-size: 10pt;">
                 # Daily fire incidents
                 <small class="simple_tooltip">
                   (info)
@@ -182,7 +245,7 @@
                 </small>:
                 <span id="daily_fire_incidents" class="val">-</span>
               </div>
-              <div class="data_value">
+              <div class="col data_value" style="font-size: 10pt;">
                 # Fire stations within 5 minutes
                 <small class="simple_tooltip">
                   (info)
@@ -196,7 +259,7 @@
                 </small>:
                 <span id="num_fire_stations" class="val">-</span>
               </div>
-              <div class="data_value">
+              <div class="col data_value" style="font-size: 10pt;">
                 # Fire stations per incident
                 <small class="simple_tooltip">
                   (info)
@@ -206,29 +269,30 @@
                 </small>:
                 <span id="num_fire_stations_vs_incidents" class="val">-</span>
               </div>
-              <br>
-              <div class="data_value">
+            </div>
+            <div class="row">
+              <div class="col data_value" style="font-size: 10pt;">
                 Spatial Accessibility (current)
                 <small class="simple_tooltip">
                   (info)
                   <span class="tooltiptext">
-                    Results of the 2SFCA algorithm.  Unlike the ratio of fire stations to incidents, this 
-                    estimate considers if nearby zones ALSO have high incident rates and therefore fewer fire stations are available to respond.                    
+                    Results of the 2SFCA algorithm.  Unlike the ratio of fire stations to incidents, this
+                    estimate considers if nearby zones ALSO have high incident rates and therefore fewer fire stations are available to respond.
                   </span>
                 </small>:
                 <span id="accessibility_score" class="val">-</span>
               </div>
-              <div class="data_value">
+              <div class="col data_value" style="font-size: 10pt;">
                 Spatial Accessibility (new)
                 <small class="simple_tooltip">
                   (info)
                   <span class="tooltiptext">
-                    Results of the 2SFCA algorithm applied to the simulation, when a new fire station is placed in the selected square. 
+                    Results of the 2SFCA algorithm applied to the simulation, when a new fire station is placed in the selected square.
                   </span>
                 </small>:
                 <span id="accessibility_score_sim" class="val">-</span>
               </div>
-              <div class="data_value">
+              <div class="col data_value" style="font-size: 10pt;">
                 % increase spatial accessibility
                 <small class="simple_tooltip">
                   (info)
@@ -239,11 +303,11 @@
                 <span id="accessibility_score_increase" class="val">-</span>
               </div>
             </div>
-
           </div>
-        </td>
-      </tr>
-    </table>
+
+        </div>
+      </div>
+    </div>
   </div>
   </div>
 

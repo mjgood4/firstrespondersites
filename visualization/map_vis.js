@@ -278,6 +278,7 @@ function drawFacilities(mapCtx, facilityData) {
         .attr("stroke", "red");
 
     if (visType === 'supply') {
+        circles.style("cursor", "pointer");
         circles.on("mouseover", (x) => {
             d3.select("#facility_" + x.properties.facility_id)
                 .attr("stroke", "black")
@@ -287,7 +288,8 @@ function drawFacilities(mapCtx, facilityData) {
         circles.on("mouseout", (x) => {
             d3.select("#facility_" + x.properties.facility_id)
                 .attr("stroke", "red")
-                .attr("r", "5");
+                .attr("r", "5")
+                .style("cursor", "pointer");
         });
     }
 

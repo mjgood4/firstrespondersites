@@ -15,11 +15,11 @@ const svgLegend = d3
 
 // create the map layers
 const baseMap = svg.append("g").attr("id", "base_map");
-const facilities = svg.append("g").attr("id", "facilities");
 const mapGrid = svg.append("g").attr("id", "map_grid");
+const catchmentArea = svg.append("g").attr("id", "catchment_area");
+const facilities = svg.append("g").attr("id", "facilities");
 const mapLegend = svg.append("g").attr("id", "map_legend");
 const simulationFacility = svg.append("g").attr("id", "simulation_facility");
-const catchmentArea = svg.append("g").attr("id", "catchment_area");
 
 let visType = "sim";
 let simType = 'sa';
@@ -49,7 +49,7 @@ Promise.all([
     const simulationResponseTime = preprocessSimulationData(data[7]);
     const demandData = data[8];
     const supplyData = data[9];
-    const catchmentData = data[10];
+    const catchmentData = data[10]
 
     // draws the base map
     const mapCtx = setupMap(sfMapData);
@@ -59,6 +59,7 @@ Promise.all([
         mapGrid.selectAll("*").remove();
         mapLegend.selectAll("*").remove();
         simulationFacility.selectAll("*").remove();
+        catchmentArea.selectAll("*").remove();
 
         drawSimulationLegend();
 
@@ -89,11 +90,14 @@ Promise.all([
         visType = this.value;
         if (visType === 'sim') {
             d3.selectAll("#simulation_controls, #reset_fca").style("display", "");
-            drawMap();
-        } else {
-            d3.selectAll("#simulation_controls,#reset_fca").style("display", "none");
-            drawMap();
+        } else if (visType === 'supply') {
+            d3.selectAll("#simulation_controls").style("display", "none");
+            d3.selectAll("#reset_fca").style("display", "");
         }
+        else {
+            d3.selectAll("#simulation_controls,#reset_fca").style("display", "none");
+        }
+        drawMap();
     });
 
     drawMap();
@@ -157,8 +161,6 @@ function createTooltipDataProcessor(baselineFcaOutput, simulationFcaOutput, dema
 }
 
 function refreshData(mapCtx, data) {
-    const facilities = drawFacilities(mapCtx, data.sfFacilityData);
-
     let gridValues = data.baselineFcaOutput;
     if (visType === 'sim' && simType === 'rt') {
         gridValues = data.baselineResponseTime;
@@ -176,10 +178,29 @@ function refreshData(mapCtx, data) {
         data.supplyData);
 
     setupEventHandlers(mapCtx, data, mapGridCells, gridDrawer, toolTipDataProcessor);
+    const facilities = drawFacilities(mapCtx, data.sfFacilityData);
 
     if (visType === 'supply') {
-        setupCatchmentAreaEventHandlers(mapCtx, facilities, data);
+        drawCatchments(mapCtx, facilities, data);
+        facilities.on("click", (x) => {
+            const key = "catchment_" + x.properties.facility_id;
+            d3.select("#catchment_area").selectAll("path").style("display", "none");
+            d3.select("#" + key).style("display", "");
+        })
     }
+}
+
+function drawCatchments(mapCtx, facilities, data) {
+    return d3.select("#catchment_area").selectAll("path")
+        .data(data.catchmentData.features)
+        .enter()
+        .append("path")
+        .attr("d", (feature) => mapCtx.path(feature))
+        .attr("id", (feature) => "catchment_" + feature.properties.facility_id)
+        .attr("fill", "lightblue")
+        .attr("fill-opacity", "0.75")
+        .attr("stroke", "black")
+        .style("display", "none");
 }
 
 function setupMap(geoObj) {
@@ -241,25 +262,36 @@ function setupMap(geoObj) {
 }
 
 function drawFacilities(mapCtx, facilityData) {
-
-    return facilities.selectAll("path")
+    let circles = facilities.selectAll("circle")
         .data(facilityData.features)
         .enter()
-        .append("path")
-        .attr("d", (feature) => mapCtx.path(feature))
+        .append("circle")
+        .attr("r", "5")
+        .attr("transform", (feature) => {
+            return "translate(" + mapCtx.projection([
+                feature.geometry.coordinates[0],
+                feature.geometry.coordinates[1],
+            ]) + ")"
+        })
+        .attr("id", (feature) => "facility_" + feature.properties.facility_id)
         .attr("fill", "red")
-        .attr("stroke", "red")
-}
+        .attr("stroke", "red");
 
-function setupCatchmentAreaEventHandlers(mapCtx, facilities, data) {
-    // TODO: implement
-    // facilities.click((x) => {
-    //
-    // })
-}
+    if (visType === 'supply') {
+        circles.on("mouseover", (x) => {
+            d3.select("#facility_" + x.properties.facility_id)
+                .attr("stroke", "black")
+                .attr("r", "8");
+        });
 
-function drawCatchmentArea(mapCtx, catchmentData) {
-    // TODO: implement
+        circles.on("mouseout", (x) => {
+            d3.select("#facility_" + x.properties.facility_id)
+                .attr("stroke", "red")
+                .attr("r", "5");
+        });
+    }
+
+    return circles;
 }
 
 function setupGridDrawer(mapCtx, gridDefinition, initialGridValues) {
@@ -418,40 +450,40 @@ function setupEventHandlers(mapCtx, data, mapGridCells, gridDrawer, toolTipDataP
 
     if (visType === 'sim') {
         mapGridCells.on("click", (x) => {
-        const zoneIdx = x.properties.zone_idx + "";
-        const simulationKey = "new_station_" + zoneIdx;
+            const zoneIdx = x.properties.zone_idx + "";
+            const simulationKey = "new_station_" + zoneIdx;
 
-        resetColors();
-        if (simulationKey in simulationData) {
-            gridDrawer(simulationData[simulationKey]);
-        }
+            resetColors();
+            if (simulationKey in simulationData) {
+                gridDrawer(simulationData[simulationKey]);
+            }
 
-        const clickCoords = {
-            x: d3.event.layerX,
-            y: d3.event.layerY
-        }
+            const clickCoords = {
+                x: d3.event.layerX,
+                y: d3.event.layerY
+            }
 
-        simulationFacility.selectAll("*").remove();
+            simulationFacility.selectAll("*").remove();
 
-        simulationFacility
-            .append("circle")
-            .attr("cx", clickCoords.x)
-            .attr("cy", clickCoords.y)
-            .attr("fill", "blue")
-            .attr("fill-opacity", "0.8")
-            .attr("r", 6)
+            simulationFacility
+                .append("circle")
+                .attr("cx", clickCoords.x)
+                .attr("cy", clickCoords.y)
+                .attr("fill", "blue")
+                .attr("fill-opacity", "0.8")
+                .attr("r", "6")
 
-        // create a new tooltip processor for our scenario
-        simulationTooltipProcessor = toolTipDataProcessor(simulationKey);
-        // populate the tooltip
-        const tooltipData = currentTooltipProcessor(zoneIdx) || false;
-        const simulationTooltipData = (simulationTooltipProcessor != null) ?
-            (simulationTooltipProcessor(zoneIdx) || false)
-            : false;
+            // create a new tooltip processor for our scenario
+            simulationTooltipProcessor = toolTipDataProcessor(simulationKey);
+            // populate the tooltip
+            const tooltipData = currentTooltipProcessor(zoneIdx) || false;
+            const simulationTooltipData = (simulationTooltipProcessor != null) ?
+                (simulationTooltipProcessor(zoneIdx) || false)
+                : false;
 
-        updateSimTooltips(tooltipData, simulationTooltipData);
+            updateSimTooltips(tooltipData, simulationTooltipData);
 
-    });
+        });
     }
 
     mapGridCells.on("mouseover", (x) => {
@@ -519,6 +551,28 @@ function drawSimulationLegend() {
         .attr("y", "35")
         .attr("style", "font-size: 14pt;")
         .text("New fire station (simulated point)")
+
+    const catchmentAreaSymbol = svgLegend
+        .append("rect")
+        .attr("width", "20")
+        .attr("height", "20")
+        .attr("fill", "lightblue")
+        .attr("x", "20")
+        .attr("y", "60")
+
+    const catchmentAreaLabel = svgLegend
+        .append("text")
+        .attr("x", "50")
+        .attr("y", "70")
+        .attr("style", "font-size: 12pt;")
+        .text("Existing fire station coverage")
+
+    const catchmentAreaLabel2 = svgLegend
+        .append("text")
+        .attr("x", "50")
+        .attr("y", "90")
+        .attr("style", "font-size: 12pt;")
+        .text("(<= 5 minute travel time)")
 
     const simAreaSymbol = svgLegend
         .append("rect")

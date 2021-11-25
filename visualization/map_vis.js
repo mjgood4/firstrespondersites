@@ -308,9 +308,10 @@ function drawZoneIncrease(currVal, initialVal, zoneSquare) {
 
         const pctLabel = "+" + ((100.0 * (currVal / initialVal)).toFixed(0) - 100.0) + "%";
         mapGrid.append("text")
-            .attr("x", zoneCoords.x + 10)
-            .attr("y", zoneCoords.y + 25)
+            .attr("x", zoneCoords.x + 5)
+            .attr("y", zoneCoords.y + 20)
             .attr("class", "zone_increase_label")
+            .style("font-size", "10pt")
             .text(pctLabel)
     }
 }
@@ -385,8 +386,7 @@ function setupGridDrawer(mapCtx, gridDefinition, initialGridValues) {
                 let zoneSquare = d3.select("#zone_idx_" + zoneIdx);
                 zoneSquare.attr("fill", colorScale(currVal));
 
-                // disabling the zone increases in the map
-                //drawZoneIncrease(currVal, initialVal, zoneSquare);
+                drawZoneIncrease(currVal, initialVal, zoneSquare);
 
             }
         }

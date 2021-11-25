@@ -94,14 +94,6 @@ Promise.all([
 
     d3.select("#dropdown").on("change", function () {
         visType = this.value;
-        if (visType === 'sim') {
-            d3.selectAll("#simulation_controls, #reset_fca").style("display", "");
-        } else if (visType === 'supply') {
-            d3.selectAll("#simulation_controls").style("display", "none");
-            d3.selectAll("#reset_fca").style("display", "");
-        } else {
-            d3.selectAll("#simulation_controls,#reset_fca").style("display", "none");
-        }
         drawMap();
     });
 

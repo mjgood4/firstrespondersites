@@ -201,46 +201,54 @@ function drawCatchments(mapCtx, facilities, data) {
 function setupMap(geoObj) {
 
     const projection = d3.geoEquirectangular();
-    projection.fitExtent(
-        [
-            [0, 10],
-            [svgWidth, svgHeight - 10],
-        ],
-        geoObj
-    );
+    const extent = [
+        [0, 10],
+        [svgWidth, svgHeight - 10],
+    ];
+    projection.fitExtent(extent, geoObj);
     const path = d3.geoPath().projection(projection);
 
-    const scale = baseMap.append("g");
+    const scaleBar = d3.geoScaleBar()
+        .projection(projection)
+        .extent(extent)
+        .units(d3.geoScaleMiles)
+        .left(.05)
+        .top(.05)
+        .distance(1)
+        .tickFormat((d) => d)
+    baseMap.append("g").call(scaleBar);
 
-    const scaleOffsetY = 50;
-    const scaleOffsetX = 50;
-
-    scale.append("rect")
-        .attr("width", "140")
-        .attr("height", "2.5")
-        .attr("x", (scaleOffsetX + 0) + "")
-        .attr("y", (scaleOffsetY + 15) + "")
-        .attr("fill", "gray");
-
-    scale.append("rect")
-        .attr("width", "2.5")
-        .attr("height", "35")
-        .attr("x", (scaleOffsetX + 0) + "")
-        .attr("y", (scaleOffsetY + 0) + "")
-        .attr("fill", "gray");
-
-    scale.append("rect")
-        .attr("width", "2.5")
-        .attr("height", "35")
-        .attr("x", (scaleOffsetX + 140) + "")
-        .attr("y", (scaleOffsetY + 0) + "")
-        .attr("fill", "gray");
-
-    scale.append("text")
-        .attr("x", (scaleOffsetX + 40) + "")
-        .attr("y", (scaleOffsetY + 5) + "")
-        .attr("fill", "gray")
-        .text("one mile");
+    // const scale = baseMap.append("g");
+    //
+    // const scaleOffsetY = 50;
+    // const scaleOffsetX = 50;
+    //
+    // scale.append("rect")
+    //     .attr("width", "140")
+    //     .attr("height", "2.5")
+    //     .attr("x", (scaleOffsetX + 0) + "")
+    //     .attr("y", (scaleOffsetY + 15) + "")
+    //     .attr("fill", "gray");
+    //
+    // scale.append("rect")
+    //     .attr("width", "2.5")
+    //     .attr("height", "35")
+    //     .attr("x", (scaleOffsetX + 0) + "")
+    //     .attr("y", (scaleOffsetY + 0) + "")
+    //     .attr("fill", "gray");
+    //
+    // scale.append("rect")
+    //     .attr("width", "2.5")
+    //     .attr("height", "35")
+    //     .attr("x", (scaleOffsetX + 140) + "")
+    //     .attr("y", (scaleOffsetY + 0) + "")
+    //     .attr("fill", "gray");
+    //
+    // scale.append("text")
+    //     .attr("x", (scaleOffsetX + 40) + "")
+    //     .attr("y", (scaleOffsetY + 5) + "")
+    //     .attr("fill", "gray")
+    //     .text("one mile");
 
     baseMap.selectAll("path")
         .data(geoObj.features)

@@ -11,6 +11,14 @@ let visWidth = d3.select("#visualization").node().clientWidth;
 let svgWidth = visWidth - 50;
 let svgHeight = window.innerHeight * .75;
 
+
+if (svgWidth < 800) {
+    svgWidth = 800;
+}
+if (svgHeight < 600) {
+    svgHeight = 600;
+}
+
 const svg = d3
     .select("#visualization")
     .append("svg")
@@ -18,6 +26,10 @@ const svg = d3
     .attr("height", svgHeight)
     .attr("width", svgWidth)
     .attr("style", "background-color: e5f0f9; margin-left: 25px;")
+
+$("#visualization")
+    .attr("style", "width: " + (svgWidth+50) + "px !important;")
+    .attr("style", "padding-bottom: 25px;");
 
 // create the map layers
 const baseMap = svg.append("g").attr("id", "base_map");
@@ -29,6 +41,7 @@ const simulationFacility = svg.append("g").attr("id", "simulation_facility");
 
 let visType = "sim";
 let simType = 'sa';
+let lastClickedFacility = null;
 
 Promise.all([
     //d3.dsv(",", "ratings-by-country.csv"),
@@ -178,10 +191,33 @@ function refreshData(mapCtx, data) {
     const facilities = drawFacilities(mapCtx, data.sfFacilityData);
 
     drawCatchments(mapCtx, facilities, data);
+
+    lastClickedFacility = null;
     facilities.on("click", (x) => {
-        const key = "catchment_" + x.properties.facility_id;
-        d3.select("#catchment_area").selectAll("path").style("display", "none");
-        d3.select("#" + key).style("display", "");
+        
+        if (lastClickedFacility != null) {
+            d3.select("#" + lastClickedFacility)
+                .attr("r", "5")
+                .attr("color", "red")
+                .attr("stroke", "red")
+        }
+
+        d3.select("#catchment_area").selectAll("path").style("display", "none");        
+
+        const catchmentKey = "catchment_" + x.properties.facility_id;
+        const facilityKey = "facility_" + x.properties.facility_id;
+
+        if (facilityKey != lastClickedFacility) {
+            d3.select("#" + catchmentKey).style("display", "");                
+            d3.select("#" + facilityKey)
+                .attr("r", "8")
+                .attr("fill", "red")
+                .attr("stroke", "black");    
+            lastClickedFacility = facilityKey;
+        }
+        else {
+            lastClickedFacility = null;   
+        }    
     })
 }
 
@@ -218,38 +254,6 @@ function setupMap(geoObj) {
         .tickFormat((d) => d)
     baseMap.append("g").call(scaleBar);
 
-    // const scale = baseMap.append("g");
-    //
-    // const scaleOffsetY = 50;
-    // const scaleOffsetX = 50;
-    //
-    // scale.append("rect")
-    //     .attr("width", "140")
-    //     .attr("height", "2.5")
-    //     .attr("x", (scaleOffsetX + 0) + "")
-    //     .attr("y", (scaleOffsetY + 15) + "")
-    //     .attr("fill", "gray");
-    //
-    // scale.append("rect")
-    //     .attr("width", "2.5")
-    //     .attr("height", "35")
-    //     .attr("x", (scaleOffsetX + 0) + "")
-    //     .attr("y", (scaleOffsetY + 0) + "")
-    //     .attr("fill", "gray");
-    //
-    // scale.append("rect")
-    //     .attr("width", "2.5")
-    //     .attr("height", "35")
-    //     .attr("x", (scaleOffsetX + 140) + "")
-    //     .attr("y", (scaleOffsetY + 0) + "")
-    //     .attr("fill", "gray");
-    //
-    // scale.append("text")
-    //     .attr("x", (scaleOffsetX + 40) + "")
-    //     .attr("y", (scaleOffsetY + 5) + "")
-    //     .attr("fill", "gray")
-    //     .text("one mile");
-
     baseMap.selectAll("path")
         .data(geoObj.features)
         .enter()
@@ -281,17 +285,24 @@ function drawFacilities(mapCtx, facilityData) {
         .attr("stroke", "red");
 
     circles.style("cursor", "pointer");
+    
     circles.on("mouseover", (x) => {
-        d3.select("#facility_" + x.properties.facility_id)
-            .attr("stroke", "black")
-            .attr("r", "8");
+        let currFacility = "facility_" + x.properties.facility_id;
+        if (currFacility != lastClickedFacility) {
+            d3.select("#" + currFacility)
+                .attr("stroke", "black")
+                .attr("r", "8");
+        }        
     });
 
     circles.on("mouseout", (x) => {
-        d3.select("#facility_" + x.properties.facility_id)
-            .attr("stroke", "red")
-            .attr("r", "5")
-            .style("cursor", "pointer");
+        let currFacility = "facility_" + x.properties.facility_id;
+        if (currFacility != lastClickedFacility) {
+            d3.select("#" + currFacility)
+                .attr("stroke", "red")
+                .attr("r", "5")
+                .style("cursor", "pointer");    
+        }
     });
 
     return circles;
@@ -306,7 +317,11 @@ function drawZoneIncrease(currVal, initialVal, zoneSquare) {
             "y": Number.parseFloat(zonePath[1].replace(/[A-Za-z].*$/, ""))
         }
 
-        const pctLabel = "+" + ((100.0 * (currVal / initialVal)).toFixed(0) - 100.0) + "%";
+        let pctLabel = "+" + ((100.0 * (currVal / initialVal)).toFixed(0) - 100.0) + "%";
+        if (currVal / initialVal > 3) {
+            pctLabel = "> +300%";
+        }
+
         mapGrid.append("text")
             .attr("x", zoneCoords.x + 5)
             .attr("y", zoneCoords.y + 20)
@@ -530,20 +545,21 @@ function setupEventHandlers(mapCtx, data, mapGridCells, gridDrawer, toolTipDataP
 }
 
 function updateLegendLabels() {
+
     let colorLegendLabel = simType === 'rt' ? "Response Time:" : "Spatial Accessibility (2SFCA):";
-    colorLegendLabel = visType === 'demand' ? "Demand" : colorLegendLabel;
+    colorLegendLabel = visType === 'demand' ? "Fire Incidents Per Day" : colorLegendLabel;
     colorLegendLabel = visType === 'supply' ? "Supply" : colorLegendLabel;
 
     let colorLegendHighLabel = simType === 'rt' ? "Fast expected response to a new incident" : "High # of available fire units per incident";
-    colorLegendHighLabel = visType === 'demand' ? "Low # of fire incidents" : colorLegendHighLabel;
+    colorLegendHighLabel = visType === 'demand' ? "Low # of daily fire incidents (about 1 per day)" : colorLegendHighLabel;
     colorLegendHighLabel = visType === 'supply' ? "High # of stations within 5 min" : colorLegendHighLabel;
 
     let colorLegendMedLabel = simType === 'rt' ? "Moderate expected response to a new incident" : "Avg # of available fire units per incident";
-    colorLegendMedLabel = visType === 'demand' ? "Moderate # of fire incidents" : colorLegendMedLabel;
+    colorLegendMedLabel = visType === 'demand' ? "Moderate # of daily fire incidents (about 3-5 per day)" : colorLegendMedLabel;
     colorLegendMedLabel = visType === 'supply' ? "Moderate # of stations within 5 min" : colorLegendMedLabel;
 
     let colorLegendLowLabel = simType === 'rt' ? "Slower expected response to a new incident" : "Low # of available fire units per incident";
-    colorLegendLowLabel = visType === 'demand' ? "High # of fire incidents" : colorLegendLowLabel;
+    colorLegendLowLabel = visType === 'demand' ? "High # daily of fire incidents (10+ per day)" : colorLegendLowLabel;
     colorLegendLowLabel = visType === 'supply' ? "Low # of stations within 5 min" : colorLegendLowLabel;
 
     d3.select("#color_scale_type_label").text(colorLegendLabel)
@@ -551,4 +567,15 @@ function updateLegendLabels() {
     d3.select("#color_legend_med_label").text(colorLegendMedLabel)
     d3.select("#color_legend_low_label").text(colorLegendLowLabel)
 
+    if (visType === "sim") {
+        $(".sim-legend-item").removeClass("item-not-visible")
+    } else {
+        $(".sim-legend-item").addClass("item-not-visible")        
+    }
+
+    if (visType === "demand") {
+        $(".demand-legend-item").removeClass("item-not-visible")
+    } else {
+        $(".demand-legend-item").addClass("item-not-visible")        
+    }
 }

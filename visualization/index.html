@@ -52,6 +52,10 @@
       display: inline-block;
     }
 
+    .item-not-visible {
+      display: none !important;
+    }
+
     /* Source: https://www.w3schools.com/css/css_tooltip.asp */
     .simple_tooltip {
       position: relative;
@@ -100,16 +104,15 @@
           <div style="text-align: center; font-size: 16pt;">
             <b style="padding-right: 5px;"><i class="fa-solid fa-sliders"></i> Current Visualization:</b>
             <select id="dropdown" style="font-size: 12pt;">
-              <option value="sim">New Fire Station Simulation</option>
-              <option value="supply">Supply</option>
-              <option value="demand">Demand</option>
+              <option value="sim">New Fire Station Simulation</option>              
+              <option value="demand">Number of Daily Fire Incidents</option>
             </select>
           </div>
           <div id="controls_spatial_accessibility" style="padding: 15px 10px 0px;">
             <div id="visualization_help" style="font-size: 12pt;">
               <i class="fa-solid fa-circle-question" style="color: blue; font-size: 18px;"></i>
               <span style="color: blue;">How to use this visualization
-                <span class="simple_tooltip">
+                <span class="simple_tooltip sim-legend-item">
                   (more info)
                   <span class="tooltiptext" style="width:600px; padding: 10px;">
                     <p>Red areas of the map have low spatial accessibility.  Practically, this means that the number of fire units
@@ -130,17 +133,29 @@
                 </span>:
               </span>
               <ul style="padding-left: 10px;">
-                <li>This visualization allows you to <b>simulate</b> the placement of a new fire station in San
-                  Francisco. <small>The visualization uses the results of the Kernel Density Estimation and the
-                    Two-Step Floating Catchment Area (2SFCA) algorithm.</small></li>
-                <li><b>Hover</b> over the map to see the estimated area the new fire station could respond to in under 5
+                <li class="demand-legend-item item-not-visible">
+                  This visualization shows the daily rates of fire department incidents in San Francisco.  A "fire department incident" is any incident
+                  that a fire engine or fire truck responded to. Each grid square represents about 1/3rd of a mile squared.
+                </li>
+                <li class="sim-legend-item">This visualization allows you to <b>simulate</b> the placement of a new fire station in San
+                  Francisco. <small>The visualization displays the results of the Two-Step Floating Catchment Area (2SFCA) algorithm,
+                    both on the observed data and after adding a simulated firestation at the specified location.</small></li>
+                <li class="sim-legend-item"><b>Hover</b> over the map to see the estimated area the new fire station could respond to in under 5
                   minutes, if a new station is placed in that area.
-                  <br><small>The estimated area shown is sourced from the BingMaps API. Note that proximity to
+                  <small>The estimated area shown is sourced from the BingMaps API. Note that proximity to
                     interstates and highways will greatly affect the size and shape of this area.</small>
                 </li>
-                <li><b>Click</b> the map to simulate placing a fire station at that location.
+                <li class="sim-legend-item"><b>Click an empty location</b> on the map to simulate placing a fire station at that location.
                   <small>The size of the impact (colors) is determined by the 2SFCA algorithm. The data is precomputed
                     in the Python notebooks created for this project.</small>
+                  <br>
+                </li>
+                <li><b>Click an existing fire station</b> (<span style="color: red; font-size: 10pt;">&#9679;</span>) to see the area 
+                  that its fire units can reliabily reach in under 5 minutes.
+                  <small>The size and shape of this area is determined via Kernel Density Estimation.  The size and shape of the area is 
+                  greatly influenced by proximity to major highways and traffic conditions.  Long and skinny protrusions from 
+                  shapes show the impact that highways and interstates have.  The estimates shown on the map are used as an important input into the 2SFCA algorithm,
+                  to determine whether the stations in an area are "spread thin" relative to the fire incident demand. </small>
                   <br>
                 </li>
               </ul>
@@ -156,7 +171,7 @@
                 </form>
             </div>
             <button id="reset_fca" style="font-size: 14pt; float: right; margin-top: 10px"><i class="fa-solid fa-undo"
-                style="font-size: 20px;"></i> Reset Visualization</button>
+                style="font-size: 20px;"></i> Reset Simulation</button>
           </div>
         </div>
         <div id="visualization_legend_container" class="row shadow" style="margin-top: 20px; padding: 10px 10px;">
@@ -172,7 +187,7 @@
                 </svg>
                 <text style="padding-left: 5px;">Existing Fire Station</text>
               </div>
-              <div class="col-6" style="padding-right: 0">
+              <div class="col-6 sim-legend-item" style="padding-right: 0">
                 <svg height="16" width="16">
                   <circle r="8" fill="blue" cx="8" cy="8"></circle>
                 </svg>
@@ -184,14 +199,17 @@
                 <svg height="16" width="16">
                   <rect height="16" width="16" fill="lightblue"></rect>
                 </svg>
-                <text style="padding-left: 5px;">Existing Fire Station Coverage</text><br>
+                <text style="padding-left: 5px;">Existing Fire Station Coverage</text>
+                <br>
                 <text style="padding-left: 5px;">(&lt;= 5 minute travel time)</text>
+                <br>
+                <small>click fire station to show</small>
               </div>
-              <div class="col-6" style="padding-right: 0">
+              <div class="col-6 sim-legend-item" style="padding-right: 0">
                 <svg height="16" width="16">
                   <rect height="16" width="16" fill="rgb(196, 141, 221)"></rect>
                 </svg>
-                <text style="padding-left: 5px;">New Fire Station Coverage</text><br>
+                <text style="padding-left: 5px;">Simulated Fire Station Coverage</text><br>
                 <text style="padding-left: 5px;">(&lt;= 5 minute travel time)</text>
               </div>
             </div>
@@ -224,10 +242,16 @@
                 <text id="color_legend_low_label" style="padding-left: 5px;"></text>
               </div>
             </div>
+            <div class="row" style="padding-top: 10px;">
+              <div class="col-12 sim-legend-item" style="padding-right: 0">
+                <span style="font-size: 12px">+00%</span>
+                <span style="padding-left: 5px;">Change in spatial accessibilty due to simulated firestation at location.</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      <div class="col-8">
+      <div id="visualization_container" class="col-8">
         <div id="visualization" class="shadow" style="margin-left: 20px; padding: 20px 0px;">
           <div class="container-fluid">
             <div class="row">
@@ -271,7 +295,7 @@
                 <span id="num_fire_stations_vs_incidents" class="val">-</span>
               </div>
             </div>
-            <div class="row">
+            <div class="row sim-legend-item">
               <div class="col data_value" style="font-size: 10pt;">
                 Spatial Accessibility (current)
                 <small class="simple_tooltip">
@@ -314,7 +338,7 @@
 
 
   <!-- d3 code below -->
-<script src="map_vis.js"></script>
+<script src="map_vis.js?v=1.0"></script>
 
 </body>
 

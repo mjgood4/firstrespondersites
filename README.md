@@ -35,7 +35,6 @@
   * *2SFCA* - Does all the heavy-lifting for modeling work.  The **outputs of this notebook are provided for interactive visualization by the d3 tool in the visualization/ directory**.  This notebook performs the spatial statistics modeling, including **kernel density estimates** and **two-step floating catchment algorithm (2SFCA)**.  
 
 * **visualization/** - Visualization of the modeling work
-
 ## Team Members:
 * Jude Yakamavage
 * Dalton Schling

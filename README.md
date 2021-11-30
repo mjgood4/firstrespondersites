@@ -6,15 +6,11 @@
 
 ## Running code from this repository
 
-**The recommended setup uses MacOS / Linux operating systems, Windows has not been tested**
+**Create a conda environment**
 
-1. If you are on Linux, the provided conda environment may work for you.  Otherwise, use the following setup proceedure for anaconda.
+1. Make sure the conda package manager is installed and run the following command to create a new environment with all the required dependencies.
 ```
-> conda create -n geo python=3.7.2
-> conda activate geo
-> conda config --env --add channels conda-forge
-> conda config --set channel_priority strict (ONLY if you encounter setup problems / missing DLLs on windows)
-> conda install pandas seaborn geopandas matplotlib scikit-learn sqlite xgboost pygeos
+> conda create -f env.yml
 ```
 2. Clone the repository
 3. Download the [SQLite database](https://gtvault-my.sharepoint.com/:u:/g/personal/manderson334_gatech_edu/EUCVCElcpSFLswnJB7sPHowB0fpm7eIoBumUq0avyfNFIw?e=lFwjYc) that we've compiled for this project **into the "/data" subdirectory** of the cloned repository.  You need to **unzip** this file.
@@ -39,6 +35,7 @@
   * *2SFCA* - Does all the heavy-lifting for modeling work.  The **outputs of this notebook are provided for interactive visualization by the d3 tool in the visualization/ directory**.  This notebook performs the spatial statistics modeling, including **kernel density estimates** and **two-step floating catchment algorithm (2SFCA)**.  
 
 * **visualization/** - Visualization of the modeling work
+
 ## Team Members:
 * Jude Yakamavage
 * Dalton Schling
@@ -46,4 +43,3 @@
 * Eric Fitchwell
 * Mike Good
 * Everton Sehnem
-

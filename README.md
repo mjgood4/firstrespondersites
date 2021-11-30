@@ -18,7 +18,6 @@
 5. If you plan on using Jupyter (rather than vscode or some other IPython environment) to run the notebook, install it into the ``geo`` conda environment
 ```
 > conda activate geo
-> conda install jupyter
 > cd <to the root of the cloned repository>
 > jupyter notebook
 ```

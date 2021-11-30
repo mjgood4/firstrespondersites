@@ -10,7 +10,7 @@
 
 1. Make sure the conda package manager is installed and run the following command to create a new environment with all the required dependencies.
 ```
-> conda create -f env.yml
+> conda env create -f env.yml
 ```
 2. Clone the repository
 3. Download the [SQLite database](https://gtvault-my.sharepoint.com/:u:/g/personal/manderson334_gatech_edu/EUCVCElcpSFLswnJB7sPHowB0fpm7eIoBumUq0avyfNFIw?e=lFwjYc) that we've compiled for this project **into the "/data" subdirectory** of the cloned repository.  You need to **unzip** this file.

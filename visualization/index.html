@@ -140,7 +140,7 @@
                 <li class="sim-legend-item">This visualization allows you to <b>simulate</b> the placement of a new fire station in San
                   Francisco. <small>The visualization displays the results of the Two-Step Floating Catchment Area (2SFCA) algorithm,
                     both on the observed data and after adding a simulated firestation at the specified location.</small></li>
-                <li class="sim-legend-item"><b>Hover</b> over the map to see the estimated area the new fire station could respond to in under 5
+                <li class="sim-legend-item"><b>Hover</b> over the map to see the estimated area the new fire station could respond to within 5
                   minutes, if a new station is placed in that area.
                   <small>The estimated area shown is sourced from the BingMaps API. Note that proximity to
                     interstates and highways will greatly affect the size and shape of this area.</small>
@@ -151,7 +151,7 @@
                   <br>
                 </li>
                 <li><b>Click an existing fire station</b> (<span style="color: red; font-size: 10pt;">&#9679;</span>) to see the area 
-                  that its fire units can reliabily reach in under 5 minutes.
+                  that its fire units can reliabily reach within 5 minutes.
                   <small>The size and shape of this area is determined via Kernel Density Estimation.  The size and shape of the area is 
                   greatly influenced by proximity to major highways and traffic conditions.  Long and skinny protrusions from 
                   shapes show the impact that highways and interstates have.  The estimates shown on the map are used as an important input into the 2SFCA algorithm,
@@ -277,7 +277,7 @@
                   <span class="tooltiptext">
                     Number of fire stations that can respond with a truck or engine within 5 minutes.
                     This is provided by kernel density estimates for each fire station to understand the geographic
-                    region each can respond to in under 5 minutes (with high probability).
+                    region each can respond to within 5 minutes (with high probability).
                     This is <b>not updated to include the simulation value</b>, but if the grid square is affected by the simulation
                     (and has a +00% icon), you can add 1 to see the effect.
                   </span>
